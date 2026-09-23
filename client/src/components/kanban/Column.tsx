@@ -12,6 +12,11 @@ interface ColumnProps {
   onQuickAddCard: (columnId: string, title: string) => void;
   onDeleteColumn: (columnId: string) => void;
   onUpdateColumn: (columnId: string, name: string) => void;
+  onQuickMoveCard?: (cardId: string, targetColumnId: string) => void;
+  prevColumnId?: string;
+  prevColumnName?: string;
+  nextColumnId?: string;
+  nextColumnName?: string;
 }
 
 export const Column: React.FC<ColumnProps> = ({
@@ -21,6 +26,11 @@ export const Column: React.FC<ColumnProps> = ({
   onQuickAddCard,
   onDeleteColumn,
   onUpdateColumn,
+  onQuickMoveCard,
+  prevColumnId,
+  prevColumnName,
+  nextColumnId,
+  nextColumnName,
 }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [quickTitle, setQuickTitle] = useState('');
@@ -69,7 +79,10 @@ export const Column: React.FC<ColumnProps> = ({
   };
 
   return (
-    <div className="w-72 bg-slate-100/80 rounded-2xl p-2.5 border border-slate-200/80 shadow-xs flex flex-col shrink-0 max-h-full transition-all">
+    <div
+      data-column-id={column.id}
+      className="w-[85vw] sm:w-72 bg-slate-100/80 rounded-2xl p-2.5 border border-slate-200/80 shadow-xs flex flex-col shrink-0 max-h-full transition-all snap-center sm:snap-align-none"
+    >
       {/* Column Header */}
       <div className="flex items-center justify-between px-3 py-2 mb-2 select-none relative">
         <div className="flex items-center gap-2 flex-1 mr-2">
@@ -183,6 +196,11 @@ export const Column: React.FC<ColumnProps> = ({
                 index={index}
                 density={density}
                 onSelect={onSelectCard}
+                onQuickMoveCard={onQuickMoveCard}
+                prevColumnId={prevColumnId}
+                prevColumnName={prevColumnName}
+                nextColumnId={nextColumnId}
+                nextColumnName={nextColumnName}
               />
             ))}
             {provided.placeholder}

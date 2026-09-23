@@ -57,8 +57,9 @@ export const Board: React.FC<BoardProps> = ({
         const { x: mouseX, y: mouseY } = mousePosRef.current;
 
         // --- 1. HORIZONTAL AUTO-SCROLL (Board canvas edges) ---
-        const hThreshold = 140; // 140px edge zone for easy, natural trigger
-        const maxHSpeed = 26;   // Max speed px/frame
+        const isMobile = window.innerWidth < 640;
+        const hThreshold = isMobile ? 60 : 140; // Adapted edge zone for mobile screens
+        const maxHSpeed = isMobile ? 20 : 26;   // Max speed px/frame
 
         // Near Left edge
         if (mouseX > rect.left - 40 && mouseX < rect.left + hThreshold) {
@@ -70,7 +71,7 @@ export const Board: React.FC<BoardProps> = ({
         else if (mouseX < rect.right + 40 && mouseX > rect.right - hThreshold) {
           const ratio = Math.max(0, Math.min(1, (mouseX - (rect.right - hThreshold)) / hThreshold));
           const speed = Math.round(ratio * (maxHSpeed - 4) + 4);
-          container.scrollLeft += speed;
+          container.scrollLeft -= speed;
         }
 
         // --- 2. VERTICAL AUTO-SCROLL (Inside individual columns) ---
@@ -83,7 +84,7 @@ export const Board: React.FC<BoardProps> = ({
               el.classList.contains('overflow-y-auto')
             ) {
               const colRect = el.getBoundingClientRect();
-              const vThreshold = 90;
+              const vThreshold = isMobile ? 60 : 90;
               const maxVSpeed = 20;
 
               if (mouseY > colRect.top - 20 && mouseY < colRect.top + vThreshold) {
@@ -109,25 +110,37 @@ export const Board: React.FC<BoardProps> = ({
     }
   }, []);
 
-  // Track global pointer position and clean up on pointer release
+  // Track global pointer position (mouse + touch) and clean up on pointer release
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mousePosRef.current = { x: e.clientX, y: e.clientY };
     };
 
-    const handleMouseUp = () => {
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches.length > 0) {
+        mousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+
+    const handlePointerEnd = () => {
       if (isDraggingRef.current) {
         stopAutoScroll();
       }
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('mouseup', handleMouseUp, { passive: true });
+    window.addEventListener('mouseup', handlePointerEnd, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handlePointerEnd, { passive: true });
+    window.addEventListener('touchcancel', handlePointerEnd, { passive: true });
 
     return () => {
       stopAutoScroll();
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', handlePointerEnd);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handlePointerEnd);
+      window.removeEventListener('touchcancel', handlePointerEnd);
     };
   }, [stopAutoScroll]);
 
@@ -208,24 +221,57 @@ export const Board: React.FC<BoardProps> = ({
 
   return (
     <div className="relative flex-1 flex flex-col overflow-hidden min-h-0">
+      {/* Mobile Column Navigation Pills */}
+      <div className="flex sm:hidden items-center gap-1.5 px-3 py-2 bg-slate-50/90 backdrop-blur-md border-b border-slate-200/80 overflow-x-auto shrink-0 select-none">
+        {board.columns.map((col) => (
+          <button
+            key={col.id}
+            type="button"
+            onClick={() => {
+              if (boardContainerRef.current) {
+                const colEl = boardContainerRef.current.querySelector(`[data-column-id="${col.id}"]`);
+                colEl?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+              }
+            }}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap bg-white border border-slate-200 text-slate-700 hover:border-indigo-300 hover:text-indigo-600 transition-colors shrink-0 shadow-2xs"
+          >
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: col.color || '#94a3b8' }} />
+            <span>{col.name}</span>
+            <span className="text-[10px] text-slate-400 bg-slate-100 px-1 rounded-full font-mono">
+              {col.cards?.length || 0}
+            </span>
+          </button>
+        ))}
+      </div>
+
       {/* Scrollable Columns Area */}
       <div
         ref={boardContainerRef}
-        className="flex-1 overflow-x-auto overflow-y-hidden p-6"
+        className="flex-1 overflow-x-auto overflow-y-hidden p-3 sm:p-6 scroll-smooth snap-x snap-mandatory sm:snap-none"
       >
         <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-          <div className="flex items-start gap-4 h-full">
-            {board.columns.map((column) => (
-              <Column
-                key={column.id}
-                column={column}
-                density={density}
-                onSelectCard={onSelectCard}
-                onQuickAddCard={onQuickAddCard}
-                onDeleteColumn={onDeleteColumn}
-                onUpdateColumn={onUpdateColumn}
-              />
-            ))}
+          <div className="flex items-start gap-3 sm:gap-4 h-full">
+            {board.columns.map((column, colIdx) => {
+              const prevCol = colIdx > 0 ? board.columns[colIdx - 1] : undefined;
+              const nextCol = colIdx < board.columns.length - 1 ? board.columns[colIdx + 1] : undefined;
+
+              return (
+                <Column
+                  key={column.id}
+                  column={column}
+                  density={density}
+                  onSelectCard={onSelectCard}
+                  onQuickAddCard={onQuickAddCard}
+                  onDeleteColumn={onDeleteColumn}
+                  onUpdateColumn={onUpdateColumn}
+                  onQuickMoveCard={(cardId, targetColId) => onMoveCard(cardId, targetColId)}
+                  prevColumnId={prevCol?.id}
+                  prevColumnName={prevCol?.name}
+                  nextColumnId={nextCol?.id}
+                  nextColumnName={nextCol?.name}
+                />
+              );
+            })}
 
             {/* Add Column button */}
             <div className="w-72 shrink-0">

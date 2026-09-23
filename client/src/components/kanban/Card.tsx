@@ -7,6 +7,8 @@ import {
   AlertCircle,
   Clock,
   Paperclip,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Card as CardType, CardDensity, Priority } from '../../types/kanban';
 
@@ -15,6 +17,11 @@ interface CardProps {
   index: number;
   density: CardDensity;
   onSelect: (card: CardType) => void;
+  onQuickMoveCard?: (cardId: string, targetColumnId: string) => void;
+  prevColumnId?: string;
+  prevColumnName?: string;
+  nextColumnId?: string;
+  nextColumnName?: string;
 }
 
 const priorityColors: Record<Priority, { bg: string; text: string; dot: string }> = {
@@ -25,7 +32,17 @@ const priorityColors: Record<Priority, { bg: string; text: string; dot: string }
   none: { bg: 'bg-slate-50', text: 'text-slate-500', dot: 'bg-slate-300' },
 };
 
-export const Card: React.FC<CardProps> = ({ card, index, density, onSelect }) => {
+export const Card: React.FC<CardProps> = ({
+  card,
+  index,
+  density,
+  onSelect,
+  onQuickMoveCard,
+  prevColumnId,
+  prevColumnName,
+  nextColumnId,
+  nextColumnName,
+}) => {
   const pStyle = priorityColors[card.priority] || priorityColors.none;
 
   // Calculate checklist progress
@@ -46,8 +63,8 @@ export const Card: React.FC<CardProps> = ({ card, index, density, onSelect }) =>
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => onSelect(card)}
-          className={`bg-white rounded-xl border border-slate-200/90 shadow-card hover:shadow-card-hover transition-all duration-150 cursor-pointer group mb-2.5 select-none relative overflow-hidden ${
-            snapshot.isDragging ? 'shadow-xl ring-2 ring-indigo-500/20 rotate-1 scale-[1.02]' : ''
+          className={`bg-white rounded-xl border border-slate-200/90 shadow-card hover:shadow-card-hover active:scale-[0.99] active:ring-2 active:ring-indigo-400/40 transition-all duration-150 cursor-pointer group mb-2.5 select-none relative overflow-hidden touch-manipulation ${
+            snapshot.isDragging ? 'shadow-2xl ring-2 ring-indigo-500 rotate-1 scale-[1.03] z-50' : ''
           }`}
         >
           {/* Card Cover */}
@@ -69,22 +86,56 @@ export const Card: React.FC<CardProps> = ({ card, index, density, onSelect }) =>
           )}
 
           <div className={densityPadding}>
-            {/* Top row: Priority & Issue Key */}
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <div className="flex items-center gap-1.5">
-                <span className={`w-2 h-2 rounded-full ${pStyle.dot}`} />
-                <span className="text-[11px] font-semibold text-slate-500 font-mono tracking-tight">
+            {/* Top row: Priority & Issue Key & Quick Move Buttons */}
+            <div className="flex items-center justify-between gap-1 mb-2">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className={`w-2 h-2 rounded-full shrink-0 ${pStyle.dot}`} />
+                <span className="text-[11px] font-semibold text-slate-500 font-mono tracking-tight truncate">
                   {card.issue_key}
                 </span>
               </div>
 
-              {card.priority !== 'none' && density !== 'compact' && (
-                <span
-                  className={`text-[10px] font-medium px-1.5 py-0.5 rounded uppercase tracking-wider ${pStyle.bg} ${pStyle.text}`}
-                >
-                  {card.priority}
-                </span>
-              )}
+              <div className="flex items-center gap-1 shrink-0">
+                {/* Quick Move for mobile or fast desktop navigation */}
+                {(prevColumnId || nextColumnId) && (
+                  <div className="flex items-center bg-slate-100/90 rounded-lg p-0.5 border border-slate-200/60 shadow-2xs">
+                    {prevColumnId && (
+                      <button
+                        type="button"
+                        title={`Move left to ${prevColumnName}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onQuickMoveCard?.(card.id, prevColumnId);
+                        }}
+                        className="p-0.5 hover:bg-white text-slate-400 hover:text-indigo-600 rounded transition-colors"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    {nextColumnId && (
+                      <button
+                        type="button"
+                        title={`Move right to ${nextColumnName}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onQuickMoveCard?.(card.id, nextColumnId);
+                        }}
+                        className="p-0.5 hover:bg-white text-slate-400 hover:text-indigo-600 rounded transition-colors"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {card.priority !== 'none' && density !== 'compact' && (
+                  <span
+                    className={`text-[10px] font-medium px-1.5 py-0.5 rounded uppercase tracking-wider ${pStyle.bg} ${pStyle.text}`}
+                  >
+                    {card.priority}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Title */}
