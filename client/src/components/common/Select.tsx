@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Check, AlertCircle, ArrowUp, ArrowDown, Minus, Circle } from 'lucide-react';
 import { Priority } from '../../types/kanban';
 
@@ -34,13 +35,87 @@ export function Select<T extends string | number>({
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState<{
+    top?: number;
+    bottom?: number;
+    left: number;
+    width: number;
+  }>({ left: 0, width: 160 });
 
   const selectedOption = options.find((opt) => opt.value === value);
+
+  const updatePosition = useCallback(() => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const menuWidth = Math.max(rect.width, 160);
+    const margin = 8;
+    const menuEstimatedHeight = 220;
+
+    // Close if trigger is scrolled out of viewport
+    if (rect.bottom < 0 || rect.top > window.innerHeight) {
+      setIsOpen(false);
+      return;
+    }
+
+    let left = rect.left;
+    if (left + menuWidth > window.innerWidth - margin) {
+      left = Math.max(margin, window.innerWidth - menuWidth - margin);
+    }
+    if (left < margin) {
+      left = margin;
+    }
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    if (spaceBelow < menuEstimatedHeight && spaceAbove > spaceBelow) {
+      setCoords({
+        bottom: window.innerHeight - rect.top + 6,
+        left,
+        width: menuWidth,
+      });
+    } else {
+      setCoords({
+        top: rect.bottom + 6,
+        left,
+        width: menuWidth,
+      });
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    if (isOpen) {
+      updatePosition();
+    }
+  }, [isOpen, updatePosition]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScrollOrResize = () => {
+      updatePosition();
+    };
+
+    window.addEventListener('resize', handleScrollOrResize);
+    window.addEventListener('scroll', handleScrollOrResize, true);
+
+    return () => {
+      window.removeEventListener('resize', handleScrollOrResize);
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+    };
+  }, [isOpen, updatePosition]);
 
   // Close on outside click and Escape key
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(target) &&
+        menuRef.current &&
+        !menuRef.current.contains(target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -62,20 +137,6 @@ export function Select<T extends string | number>({
     };
   }, [isOpen]);
 
-  const [openUpwards, setOpenUpwards] = useState(false);
-
-  useEffect(() => {
-    if (isOpen && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      if (spaceBelow < 220 && rect.top > spaceBelow) {
-        setOpenUpwards(true);
-      } else {
-        setOpenUpwards(false);
-      }
-    }
-  }, [isOpen]);
-
   const handleSelect = (optValue: T) => {
     onChange(optValue);
     setIsOpen(false);
@@ -90,7 +151,11 @@ export function Select<T extends string | number>({
       <button
         type="button"
         disabled={disabled}
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        onClick={() => {
+          if (disabled) return;
+          if (!isOpen) updatePosition();
+          setIsOpen(!isOpen);
+        }}
         className={`w-full flex items-center justify-between gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all group select-none text-left ${
           disabled
             ? 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed'
@@ -123,63 +188,73 @@ export function Select<T extends string | number>({
         />
       </button>
 
-      {/* Floating Dropdown Menu */}
-      {isOpen && (
-        <div
-          className={`absolute z-50 ${
-            openUpwards ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
-          } left-0 w-full min-w-[160px] bg-white rounded-xl shadow-xl border border-slate-200/90 py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100 select-none ${menuClassName}`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {options.length === 0 ? (
-            <div className="px-3 py-2 text-xs text-slate-400 text-center italic">
-              No options available
-            </div>
-          ) : (
-            options.map((opt) => {
-              const isSelected = opt.value === value;
-              return (
-                <button
-                  key={String(opt.value)}
-                  type="button"
-                  onClick={() => handleSelect(opt.value)}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors group ${
-                    isSelected
-                      ? 'bg-indigo-50/70 text-indigo-950 font-semibold'
-                      : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 truncate flex-1 min-w-0">
-                    {opt.color && !opt.icon && (
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0 ring-1 ring-black/5"
-                        style={{ backgroundColor: opt.color }}
-                      />
-                    )}
-                    {opt.icon && (
-                      <span className="shrink-0 flex items-center">
-                        {opt.icon}
-                      </span>
-                    )}
-                    <div className="truncate">
-                      <span className="truncate">{opt.label}</span>
-                      {opt.description && (
-                        <p className="text-[10px] text-slate-400 font-normal truncate mt-0.5">
-                          {opt.description}
-                        </p>
+      {/* Floating Dropdown Menu portaled outside to document.body */}
+      {isOpen &&
+        createPortal(
+          <div
+            ref={menuRef}
+            style={{
+              position: 'fixed',
+              left: `${coords.left}px`,
+              ...(coords.top !== undefined
+                ? { top: `${coords.top}px` }
+                : { bottom: `${coords.bottom}px` }),
+              width: `${coords.width}px`,
+              zIndex: 9999,
+            }}
+            className={`bg-white rounded-xl shadow-2xl border border-slate-200/90 py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100 select-none ${menuClassName}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {options.length === 0 ? (
+              <div className="px-3 py-2 text-xs text-slate-400 text-center italic">
+                No options available
+              </div>
+            ) : (
+              options.map((opt) => {
+                const isSelected = opt.value === value;
+                return (
+                  <button
+                    key={String(opt.value)}
+                    type="button"
+                    onClick={() => handleSelect(opt.value)}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors group ${
+                      isSelected
+                        ? 'bg-indigo-50/70 text-indigo-950 font-semibold'
+                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate flex-1 min-w-0">
+                      {opt.color && !opt.icon && (
+                        <span
+                          className="w-2 h-2 rounded-full shrink-0 ring-1 ring-black/5"
+                          style={{ backgroundColor: opt.color }}
+                        />
                       )}
+                      {opt.icon && (
+                        <span className="shrink-0 flex items-center">
+                          {opt.icon}
+                        </span>
+                      )}
+                      <div className="truncate">
+                        <span className="truncate">{opt.label}</span>
+                        {opt.description && (
+                          <p className="text-[10px] text-slate-400 font-normal truncate mt-0.5">
+                            {opt.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  {isSelected && (
-                    <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0 ml-1.5" />
-                  )}
-                </button>
-              );
-            })
-          )}
-        </div>
-      )}
+                    {isSelected && (
+                      <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0 ml-1.5" />
+                    )}
+                  </button>
+                );
+              })
+            )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
