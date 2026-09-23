@@ -15,6 +15,7 @@ import {
 import { Card, Column, Priority } from '../../types/kanban';
 import { ConfirmModal } from '../common/ConfirmModal';
 import { DatePicker } from '../common/DatePicker';
+import { Select, PRIORITY_OPTIONS, SelectOption } from '../common/Select';
 
 interface CardDetailModalProps {
   card: Card | null;
@@ -64,6 +65,12 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
   if (!card) return null;
 
   const currentColumn = columns.find((c) => c.id === card.column_id);
+
+  const columnOptions: SelectOption<string>[] = columns.map((c) => ({
+    value: c.id,
+    label: c.name,
+    color: c.color || '#6366f1',
+  }));
 
   const handleTitleBlur = () => {
     if (title.trim() && title !== card.title) {
@@ -138,33 +145,23 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
             {/* Status */}
             <div>
               <span className="text-slate-400 block mb-1 font-medium">Status</span>
-              <select
+              <Select
                 value={card.column_id}
-                onChange={(e) => onUpdate(card.id, { column_id: e.target.value })}
-                className="w-full bg-white border border-slate-200 rounded-md p-1.5 text-slate-700 font-medium focus:outline-none"
-              >
-                {columns.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(colId) => onUpdate(card.id, { column_id: colId })}
+                options={columnOptions}
+                placeholder="Select status..."
+              />
             </div>
 
             {/* Priority */}
             <div>
               <span className="text-slate-400 block mb-1 font-medium">Priority</span>
-              <select
+              <Select
                 value={card.priority}
-                onChange={(e) => onUpdate(card.id, { priority: e.target.value as Priority })}
-                className="w-full bg-white border border-slate-200 rounded-md p-1.5 text-slate-700 font-medium focus:outline-none capitalize"
-              >
-                <option value="urgent">🔴 Urgent</option>
-                <option value="high">🟠 High</option>
-                <option value="medium">🟡 Medium</option>
-                <option value="low">🔵 Low</option>
-                <option value="none">⚪ None</option>
-              </select>
+                onChange={(newPriority) => onUpdate(card.id, { priority: newPriority as Priority })}
+                options={PRIORITY_OPTIONS}
+                placeholder="Select priority..."
+              />
             </div>
 
             {/* Due Date */}

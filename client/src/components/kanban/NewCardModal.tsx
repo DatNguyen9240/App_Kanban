@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Sparkles } from 'lucide-react';
 import { Column, Priority } from '../../types/kanban';
+import { Select, PRIORITY_OPTIONS, SelectOption } from '../common/Select';
 
 interface NewCardModalProps {
   isOpen: boolean;
@@ -26,6 +27,18 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
   const [columnId, setColumnId] = useState(columns[0]?.id || '');
   const [priority, setPriority] = useState<Priority>('none');
   const [coverUrl, setCoverUrl] = useState('');
+
+  const columnOptions: SelectOption<string>[] = columns.map((c) => ({
+    value: c.id,
+    label: c.name,
+    color: c.color || '#6366f1',
+  }));
+
+  useEffect(() => {
+    if (!columnId && columns.length > 0) {
+      setColumnId(columns[0].id);
+    }
+  }, [columns, columnId]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -58,10 +71,10 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg relative animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-2xl">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-indigo-600" />
             <h2 className="text-sm font-semibold text-slate-800">Create New Issue</h2>
@@ -102,32 +115,24 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1">Status (Column)</label>
-              <select
+              <Select
                 value={columnId}
-                onChange={(e) => setColumnId(e.target.value)}
-                className="w-full text-xs text-slate-800 px-3 py-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 font-medium"
-              >
-                {columns.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setColumnId(val)}
+                options={columnOptions}
+                placeholder="Select column..."
+                buttonClassName="py-2 rounded-xl"
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1">Priority</label>
-              <select
+              <Select
                 value={priority}
-                onChange={(e) => setPriority(e.target.value as Priority)}
-                className="w-full text-xs text-slate-800 px-3 py-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 font-medium capitalize"
-              >
-                <option value="urgent">🔴 Urgent</option>
-                <option value="high">🟠 High</option>
-                <option value="medium">🟡 Medium</option>
-                <option value="low">🔵 Low</option>
-                <option value="none">⚪ None</option>
-              </select>
+                onChange={(val) => setPriority(val)}
+                options={PRIORITY_OPTIONS}
+                placeholder="Select priority..."
+                buttonClassName="py-2 rounded-xl"
+              />
             </div>
           </div>
 
