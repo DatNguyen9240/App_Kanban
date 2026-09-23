@@ -540,55 +540,72 @@ Workspaces (1) ───< (N) Projects (1) ───< (N) Boards (1) ───< 
 
 ---
 
-🏗️ 14. Cấu trúc Dự án (Monorepo Go + Next.js)
+🏗️ 14. Cấu trúc Dự án Thực tế (Full-stack Go + Vite React TSX)
 
 ```
 App_Kanban/
-├── client/                     # Frontend (Next.js 14/15, Tailwind, shadcn/ui)
+├── client/                     # Frontend (Vite 5, React 18, TypeScript, Tailwind CSS)
 │   ├── src/
-│   │   ├── app/                # App Router (routes, pages)
-│   │   ├── components/         # Board, Column, Card, Modals, CommandPalette
-│   │   ├── hooks/              # useBoardSocket, useKanbanDrag
-│   │   ├── stores/             # Zustand state management
-│   │   └── types/              # TypeScript definitions
+│   │   ├── components/
+│   │   │   ├── command/        # CommandPalette (Ctrl + K)
+│   │   │   ├── common/         # ConfirmModal, DatePicker, ImageUpload, Select
+│   │   │   ├── kanban/         # Board, Column, Card, CardDetailModal, NewCardModal, NewColumnModal, NewProjectModal
+│   │   │   ├── layout/         # Sidebar, Header
+│   │   │   ├── modals/         # InboxModal, SettingsModal
+│   │   │   └── views/          # ListView, CalendarView, TimelineView, MyIssuesView
+│   │   ├── hooks/              # useWebSocket (real-time live sync)
+│   │   ├── services/           # api.ts (REST client & file upload)
+│   │   ├── types/              # kanban.ts (TypeScript definitions)
+│   │   ├── App.tsx             # Main Application Root & State
+│   │   └── main.tsx            # Vite Entry Point
 │   ├── package.json
-│   └── tailwind.config.js
+│   ├── tailwind.config.js
+│   └── vite.config.ts
 │
-├── server/                     # Backend Go (Clean Architecture / Standard Layout)
+├── server/                     # Backend Go (Clean Architecture / Gin / GORM)
 │   ├── cmd/
 │   │   └── api/
-│   │       └── main.go         # Entry point server
+│   │       └── main.go         # Entry point server (Gin HTTP + WebSocket + Static Files)
 │   ├── internal/
 │   │   ├── config/             # Load env & configurations
-│   │   ├── database/           # Postgres connection & migration runner
-│   │   ├── handlers/           # HTTP controllers & WebSocket handler
-│   │   ├── models/             # Database structs / entities
-│   │   ├── repository/         # Data access layer (SQL/GORM queries)
-│   │   ├── services/           # Business logic & Lexorank calculation
+│   │   ├── database/           # Dual DB Engine (PostgreSQL / SQLite auto-fallback)
+│   │   ├── handlers/           # auth_handler, board_handler, card_handler, upload_handler
+│   │   ├── models/             # 12 Database GORM structs / entities
+│   │   ├── services/           # Lexorank calculation (Fractional Indexing)
 │   │   ├── websocket/          # Hub, Client, Room broadcaster
 │   │   └── middleware/         # Auth JWT, CORS, Logger, Recover
-│   ├── pkg/                    # Utilities dùng chung (token, validator)
-│   ├── migrations/             # SQL migration files (.up.sql / .down.sql)
+│   ├── uploads/                # Local static storage for Card Cover Images
 │   ├── go.mod
 │   └── go.sum
 │
-├── docker-compose.yml          # Postgres + Redis + MinIO (one-click dev env)
+├── docker-compose.yml          # Postgres + Redis (one-click dev/prod environment)
+├── start.bat                   # 1-click startup script (starts both Go & Vite servers)
+├── TEST_CASES.md               # Comprehensive verification test suite
 └── README.MD
 ```
 
 ---
 
-🚀 Lộ trình triển khai khuyến nghị:
+🚀 Hướng Dẫn Vận Hành & Khởi Chạy (Quick Start):
 
-1. **Khởi tạo hạ tầng & DB**: File `docker-compose.yml` (Postgres, Redis) và viết file migration SQL.
-2. **Backend Go Core**:
-   - Dựng cấu trúc project `server/` với Go.
-   - Viết các API CRUD Board, Column, Card với logic Fractional Indexing.
-   - Thêm WebSocket Hub xử lý broadcast sự kiện kéo thả card.
-3. **Frontend Next.js**:
-   - Dựng giao diện Sidebar, Board, Column, Card theo blueprint Linear x Trello x PLANKA.
-   - Tích hợp `@hello-pangea/dnd` hoặc `@dnd-kit` cho kéo thả mượt mà.
-   - Kết nối WebSocket để đồng bộ real-time nhiều người cùng xem.
-4. **Detail Features**: Command Palette (Ctrl+K), Card Detail Modal (Checklist, Comments, Activity log).
+1. **Khởi động 1-Click (Khuyên dùng)**:
+   - Nhấp đúp vào file `start.bat` trong thư mục dự án. Script sẽ tự khởi chạy cả Backend Go và Frontend Vite cùng lúc.
+   - **Frontend App**: [http://localhost:3000](http://localhost:3000)
+   - **Backend Go API**: [http://localhost:8080](http://localhost:8080)
 
-Nếu bạn muốn bắt đầu code ngay, mình có thể setup khung dự án chuẩn: **Backend Go (REST + WebSocket) + Frontend Next.js TSX Tailwind** cho bạn!
+2. **Khởi động thủ công qua dòng lệnh**:
+   - **Khởi động Backend Go**:
+     ```bash
+     cd server
+     go run ./cmd/api
+     ```
+   - **Khởi động Frontend Vite**:
+     ```bash
+     cd client
+     npm install
+     npm run dev
+     ```
+
+3. **Tài khoản quản trị viên mặc định**:
+   - **Email**: `admin@kanban.dev`
+   - **Mật khẩu**: `admin123`
