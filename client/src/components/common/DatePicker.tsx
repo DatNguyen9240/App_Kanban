@@ -8,7 +8,7 @@ import {
 
 interface DatePickerProps {
   value?: string | null;
-  onChange: (isoString: string | undefined) => void;
+  onChange: (isoString: string | null) => void;
   placeholder?: string;
   className?: string;
 }
@@ -103,7 +103,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const days: CalendarDay[] = [];
 
-  // Previous month trailing days
+  // 1. Previous month trailing days
   for (let i = startDay - 1; i >= 0; i--) {
     const d = daysInPrevMonth - i;
     days.push({
@@ -113,7 +113,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     });
   }
 
-  // Current month days
+  // 2. Current month days
   for (let i = 1; i <= daysInCurrentMonth; i++) {
     days.push({
       day: i,
@@ -122,9 +122,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     });
   }
 
-  // Next month leading days to complete 35 or 42 grid cells
-  const remainingCells = (7 - (days.length % 7)) % 7;
-  for (let i = 1; i <= remainingCells; i++) {
+  // 3. Next month leading days (fill up to 35 or 42 grid cells)
+  const totalCells = days.length > 35 ? 42 : 35;
+  const remaining = totalCells - days.length;
+  for (let i = 1; i <= remaining; i++) {
     days.push({
       day: i,
       isCurrentMonth: false,
@@ -142,7 +143,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   const isSelected = (d: Date) => {
-    if (!selectedDate) return false;
+    if (!selectedDate || isNaN(selectedDate.getTime())) return false;
     return (
       d.getDate() === selectedDate.getDate() &&
       d.getMonth() === selectedDate.getMonth() &&
@@ -158,8 +159,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   const handleClear = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
-    onChange(undefined);
+    onChange(null);
     setIsOpen(false);
   };
 

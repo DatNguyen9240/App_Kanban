@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -175,11 +176,21 @@ type UpdateCardRequest struct {
 
 func (h *CardHandler) UpdateCard(c *gin.Context) {
 	cardID := c.Param("id")
+
+	bodyBytes, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
+		return
+	}
+
 	var req UpdateCardRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := json.Unmarshal(bodyBytes, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	var rawMap map[string]interface{}
+	_ = json.Unmarshal(bodyBytes, &rawMap)
 
 	var card models.Card
 	if err := h.db.Preload("Assignees").Preload("Labels").Preload("Checklists.Items").Preload("Comments.User").First(&card, "id = ?", cardID).Error; err != nil {
@@ -196,8 +207,12 @@ func (h *CardHandler) UpdateCard(c *gin.Context) {
 	if req.Priority != nil {
 		card.Priority = *req.Priority
 	}
-	if req.DueDate != nil {
-		card.DueDate = req.DueDate
+	if val, exists := rawMap["due_date"]; exists {
+		if val == nil || val == "" {
+			card.DueDate = nil
+		} else if req.DueDate != nil {
+			card.DueDate = req.DueDate
+		}
 	}
 	if req.CoverImageURL != nil {
 		card.CoverImageURL = *req.CoverImageURL

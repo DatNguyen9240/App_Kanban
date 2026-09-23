@@ -268,6 +268,28 @@ func TestCardCRUDAndFractionalIndexing(t *testing.T) {
 	assert.Equal(t, "urgent", updatedCard.Priority)
 	assert.Equal(t, col1ID, updatedCard.ColumnID)
 
+	// 3b. Set Due Date
+	dueDatePayload := `{"due_date":"2026-09-25T12:00:00Z"}`
+	req, _ = http.NewRequest("PATCH", "/api/v1/cards/"+createdCard.ID, bytes.NewBufferString(dueDatePayload))
+	req.Header.Set("Content-Type", "application/json")
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
+	var withDateCard models.Card
+	_ = json.Unmarshal(w.Body.Bytes(), &withDateCard)
+	assert.NotNil(t, withDateCard.DueDate)
+
+	// 3c. Clear Due Date with null
+	clearDatePayload := `{"due_date":null}`
+	req, _ = http.NewRequest("PATCH", "/api/v1/cards/"+createdCard.ID, bytes.NewBufferString(clearDatePayload))
+	req.Header.Set("Content-Type", "application/json")
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
+	var clearedDateCard models.Card
+	_ = json.Unmarshal(w.Body.Bytes(), &clearedDateCard)
+	assert.Nil(t, clearedDateCard.DueDate)
+
 	// 4. Add Comment
 	commentPayload := map[string]string{
 		"content": "All tests are passing with flying colors!",

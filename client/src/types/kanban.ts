@@ -57,7 +57,7 @@ export interface Card {
   description: string;
   position: number;
   priority: Priority;
-  due_date?: string;
+  due_date?: string | null;
   cover_image_url?: string;
   creator_id: string;
   assignees?: User[];
