@@ -290,6 +290,26 @@ func TestCardCRUDAndFractionalIndexing(t *testing.T) {
 	_ = json.Unmarshal(w.Body.Bytes(), &clearedDateCard)
 	assert.Nil(t, clearedDateCard.DueDate)
 
+	// 3d. Verify reloaded board from DB also has nil DueDate
+	req, _ = http.NewRequest("GET", "/api/v1/boards/"+boardID, nil)
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
+	var reloadedBoard models.Board
+	_ = json.Unmarshal(w.Body.Bytes(), &reloadedBoard)
+	var foundCardInBoard *models.Card
+	for _, c := range reloadedBoard.Columns {
+		for _, cd := range c.Cards {
+			if cd.ID == createdCard.ID {
+				cdCopy := cd
+				foundCardInBoard = &cdCopy
+				break
+			}
+		}
+	}
+	assert.NotNil(t, foundCardInBoard)
+	assert.Nil(t, foundCardInBoard.DueDate)
+
 	// 4. Add Comment
 	commentPayload := map[string]string{
 		"content": "All tests are passing with flying colors!",

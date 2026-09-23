@@ -208,17 +208,18 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   return (
     <div className={`relative inline-block w-full ${className}`} ref={containerRef}>
-      {/* Trigger Button */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl border text-xs font-medium transition-all group ${
+      {/* Trigger Container */}
+      <div
+        className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl border text-xs font-medium transition-all group select-none ${
           hasValue
             ? 'bg-indigo-50/50 border-indigo-200 text-indigo-950 shadow-2xs hover:bg-indigo-50 hover:border-indigo-300'
             : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
         } ${isOpen ? 'ring-2 ring-indigo-500/20 border-indigo-500' : ''}`}
       >
-        <div className="flex items-center gap-2 truncate">
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 truncate flex-1 min-w-0 cursor-pointer"
+        >
           <CalendarIcon
             className={`w-3.5 h-3.5 shrink-0 transition-colors ${
               hasValue ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'
@@ -230,15 +231,16 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         </div>
 
         {hasValue && (
-          <span
+          <button
+            type="button"
             onClick={handleClear}
             title="Clear due date"
-            className="p-0.5 hover:bg-slate-200/80 rounded-md text-slate-400 hover:text-slate-600 transition-colors shrink-0 ml-1"
+            className="p-1 hover:bg-slate-200/80 rounded-md text-slate-400 hover:text-rose-600 transition-colors shrink-0 ml-1 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
-          </span>
+          </button>
         )}
-      </button>
+      </div>
 
       {/* Floating Popover Calendar */}
       {isOpen && (

@@ -207,9 +207,11 @@ func (h *CardHandler) UpdateCard(c *gin.Context) {
 	if req.Priority != nil {
 		card.Priority = *req.Priority
 	}
+	var clearDueDate bool
 	if val, exists := rawMap["due_date"]; exists {
 		if val == nil || val == "" {
 			card.DueDate = nil
+			clearDueDate = true
 		} else if req.DueDate != nil {
 			card.DueDate = req.DueDate
 		}
@@ -239,6 +241,10 @@ func (h *CardHandler) UpdateCard(c *gin.Context) {
 	if err := h.db.Save(&card).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	if clearDueDate {
+		h.db.Model(&models.Card{}).Where("id = ?", card.ID).Update("due_date", nil)
 	}
 
 	userID, _ := c.Get("userID")

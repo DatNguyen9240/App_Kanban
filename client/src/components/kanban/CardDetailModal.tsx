@@ -34,6 +34,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 }) => {
   const [title, setTitle] = useState(card?.title || '');
   const [description, setDescription] = useState(card?.description || '');
+  const [dueDate, setDueDate] = useState<string | null>(card?.due_date || null);
   const [commentText, setCommentText] = useState('');
   const [newCheckItem, setNewCheckItem] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -43,6 +44,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
     if (card) {
       setTitle(card.title);
       setDescription(card.description || '');
+      setDueDate(card.due_date || null);
     }
   }, [card]);
 
@@ -226,8 +228,11 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
             <div>
               <span className="text-slate-400 block mb-1 font-medium">Due Date</span>
               <DatePicker
-                value={card.due_date}
-                onChange={(newDate) => onUpdate(card.id, { due_date: newDate })}
+                value={dueDate}
+                onChange={(newDate) => {
+                  setDueDate(newDate);
+                  onUpdate(card.id, { due_date: newDate });
+                }}
               />
             </div>
 
