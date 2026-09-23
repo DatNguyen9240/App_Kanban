@@ -29,9 +29,12 @@ Trạng thái kiểm thử: **100% PASS** (Tất cả chức năng và nút bấ
 | **TC-16** | Card Detail | Chỉnh sửa chi tiết Thẻ (Card Detail Modal) | Card trên board | 1. Nhấp vào card để mở modal<br>2. Chỉnh sửa title, description, priority, due date, status | Các trường tự động lưu (onBlur/onChange) và đồng bộ ngay lập tức | **PASS** |
 | **TC-17** | Checklist | Tick chọn và thêm Checklist Item | Card Detail Modal đang mở | 1. Tick chọn checkbox công việc con<br>2. Nhập tên item mới và bấm Add | Item chuyển trạng thái gạch ngang, progress bar trên card ngoài board cập nhật (`x/y`) | **PASS** |
 | **TC-18** | Comments | Bình luận hoạt động (Activity & Comments) | Card Detail Modal đang mở | 1. Nhập nội dung vào ô "Leave a comment..."<br>2. Bấm "Send" | Comment xuất hiện ngay kèm avatar, tên người dùng và thời gian thực | **PASS** |
-| **TC-19** | Card Mgmt | Xóa thẻ (Delete Card) | Card Detail Modal đang mở | 1. Nhấp icon thùng rác màu đỏ trên góc modal<br>2. Xác nhận | Card bị xóa khỏi board, modal đóng lại | **PASS** |
+| **TC-19** | Card Mgmt | Xóa thẻ với Confirm Modal | Card Detail Modal hoặc ListView | 1. Nhấp icon thùng rác<br>2. Hộp thoại ConfirmModal hiện lên với cảnh báo đỏ<br>3. Bấm "Delete" hoặc "Cancel" | Thẻ bị xóa an toàn khi xác nhận, hoặc hủy bỏ mà không dùng alert trình duyệt | **PASS** |
 | **TC-20** | Command Palette | Gọi lệnh phím tắt (`Ctrl + K` hoặc `Cmd + K`) | Bất kỳ vị trí nào trong app | 1. Nhấn tổ hợp phím `Ctrl + K`<br>2. Thử gõ tìm lệnh<br>3. Bấm Escape để đóng | Hộp thoại lệnh xuất hiện mượt mà, hỗ trợ tạo issue nhanh và đổi view | **PASS** |
 | **TC-21** | Real-time Sync | Đồng bộ đa người dùng qua WebSocket | 2 tab trình duyệt cùng mở board | 1. Tab 1 kéo thả card hoặc thêm comment<br>2. Quan sát Tab 2 | Tab 2 tự động cập nhật ngay lập tức mà không cần reload trang | **PASS** |
+| **TC-22** | Column Mgmt | Xóa cột với Confirm Modal | Menu 3 chấm của cột | 1. Chọn "Delete Column"<br>2. Hộp thoại ConfirmModal hiện lên<br>3. Bấm xác nhận | Cột và toàn bộ thẻ bên trong bị xóa, thay thế hoàn toàn popup alert mặc định | **PASS** |
+| **TC-23** | ListView Delete | Xóa thẻ trực tiếp từ danh sách List View | Chế độ xem List View | 1. Hover chuột vào hàng task<br>2. Bấm icon thùng rác góc phải<br>3. Xác nhận trên ConfirmModal | Thẻ được xóa trực tiếp khỏi bảng mà không cần mở modal chi tiết | **PASS** |
+| **TC-24** | Zero Native Alert | Thay thế 100% native alert() bằng Modal chuẩn UI | Sidebar (Inbox & Settings) | 1. Bấm nút Inbox<br>2. Bấm nút Settings | Hiển thị InboxModal & SettingsModal thiết kế riêng, 0 native alert nào còn tồn tại | **PASS** |
 
 ---
 

@@ -22,6 +22,8 @@ interface SidebarProps {
   onNewProject: () => void;
   isMyIssues: boolean;
   onToggleMyIssues: () => void;
+  onOpenInbox: () => void;
+  onOpenSettings: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -34,6 +36,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNewProject,
   isMyIssues,
   onToggleMyIssues,
+  onOpenInbox,
+  onOpenSettings,
 }) => {
   return (
     <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen select-none shrink-0 z-20">
@@ -64,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Quick Menu */}
         <div className="space-y-1">
           <button
-            onClick={() => alert('Inbox: All recent notifications and mentions are up to date!')}
+            onClick={onOpenInbox}
             className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors group"
           >
             <div className="flex items-center gap-2.5">
@@ -207,7 +211,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <p className="text-[10px] text-slate-500 truncate">admin@kanban.dev</p>
           </div>
           <button
-            onClick={() => alert('Settings: Workspace and Account preferences configured!')}
+            onClick={onOpenSettings}
             title="Settings"
             className="text-slate-400 hover:text-slate-600 p-1 hover:bg-slate-100 rounded transition-colors"
           >

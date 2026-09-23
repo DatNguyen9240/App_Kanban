@@ -13,6 +13,7 @@ import {
   Paperclip,
 } from 'lucide-react';
 import { Card, Column, Priority } from '../../types/kanban';
+import { ConfirmModal } from '../common/ConfirmModal';
 
 interface CardDetailModalProps {
   card: Card | null;
@@ -41,6 +42,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
   const [description, setDescription] = useState(card.description || '');
   const [commentText, setCommentText] = useState('');
   const [newCheckItem, setNewCheckItem] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const currentColumn = columns.find((c) => c.id === card.column_id);
 
@@ -83,12 +85,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                if (window.confirm('Are you sure you want to delete this issue?')) {
-                  onDelete(card.id);
-                  onClose();
-                }
-              }}
+              onClick={() => setShowDeleteModal(true)}
               title="Delete issue"
               className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
             >
@@ -333,6 +330,19 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Delete Issue"
+        description={`Are you sure you want to delete "${card.issue_key}: ${card.title}"? This action cannot be undone.`}
+        confirmText="Delete Issue"
+        onConfirm={() => {
+          setShowDeleteModal(false);
+          onDelete(card.id);
+          onClose();
+        }}
+        onClose={() => setShowDeleteModal(false)}
+      />
     </div>
   );
 };

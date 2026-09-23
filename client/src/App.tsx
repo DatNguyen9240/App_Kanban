@@ -9,6 +9,8 @@ import { CardDetailModal } from './components/kanban/CardDetailModal';
 import { NewCardModal } from './components/kanban/NewCardModal';
 import { NewProjectModal } from './components/kanban/NewProjectModal';
 import { CommandPalette } from './components/command/CommandPalette';
+import { InboxModal } from './components/modals/InboxModal';
+import { SettingsModal } from './components/modals/SettingsModal';
 import {
   Workspace,
   Project,
@@ -37,6 +39,8 @@ export const App: React.FC = () => {
   const [isNewCardOpen, setIsNewCardOpen] = useState(false);
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isInboxOpen, setIsInboxOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // 1. Initial Load
   const loadData = async () => {
@@ -366,6 +370,8 @@ export const App: React.FC = () => {
         onNewProject={() => setIsNewProjectOpen(true)}
         isMyIssues={isMyIssues}
         onToggleMyIssues={() => setIsMyIssues(!isMyIssues)}
+        onOpenInbox={() => setIsInboxOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       {/* Main Workspace Area */}
@@ -398,7 +404,11 @@ export const App: React.FC = () => {
           )}
 
           {currentView === 'list' && filteredBoard && (
-            <ListView board={filteredBoard} onSelectCard={setSelectedCard} />
+            <ListView
+              board={filteredBoard}
+              onSelectCard={setSelectedCard}
+              onDeleteCard={handleDeleteCard}
+            />
           )}
 
           {currentView === 'calendar' && filteredBoard && (
@@ -441,6 +451,27 @@ export const App: React.FC = () => {
         onClose={() => setIsCommandOpen(false)}
         onNewIssue={() => setIsNewCardOpen(true)}
         onSelectView={(v) => setCurrentView(v)}
+      />
+
+      <InboxModal
+        isOpen={isInboxOpen}
+        onClose={() => setIsInboxOpen(false)}
+      />
+
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        workspaceName={workspace?.name}
+        onResetBoard={async () => {
+          if (!currentBoard) return;
+          // Delete all cards in all columns
+          for (const col of currentBoard.columns) {
+            for (const c of col.cards) {
+              await api.deleteCard(c.id).catch(() => {});
+            }
+          }
+          await refreshBoard();
+        }}
       />
     </div>
   );

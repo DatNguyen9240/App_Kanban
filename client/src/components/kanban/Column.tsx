@@ -3,6 +3,7 @@ import { Droppable } from '@hello-pangea/dnd';
 import { Plus, MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
 import { Card as CardType, CardDensity, Column as ColumnType } from '../../types/kanban';
 import { Card } from './Card';
+import { ConfirmModal } from '../common/ConfirmModal';
 
 interface ColumnProps {
   column: ColumnType;
@@ -26,6 +27,7 @@ export const Column: React.FC<ColumnProps> = ({
   const [showMenu, setShowMenu] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [colName, setColName] = useState(column.name);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -133,9 +135,7 @@ export const Column: React.FC<ColumnProps> = ({
                 <button
                   onClick={() => {
                     setShowMenu(false);
-                    if (window.confirm(`Delete column "${column.name}" and all its tasks?`)) {
-                      onDeleteColumn(column.id);
-                    }
+                    setShowDeleteModal(true);
                   }}
                   className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 transition-colors"
                 >
@@ -211,6 +211,18 @@ export const Column: React.FC<ColumnProps> = ({
           </div>
         )}
       </Droppable>
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Delete Column"
+        description={`Are you sure you want to delete column "${column.name}" and all its tasks? This action cannot be undone.`}
+        confirmText="Delete Column"
+        onConfirm={() => {
+          setShowDeleteModal(false);
+          onDeleteColumn(column.id);
+        }}
+        onClose={() => setShowDeleteModal(false)}
+      />
     </div>
   );
 };
