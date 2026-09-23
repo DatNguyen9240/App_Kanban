@@ -81,7 +81,7 @@ export const Column: React.FC<ColumnProps> = ({
   return (
     <div
       data-column-id={column.id}
-      className="w-[85vw] sm:w-72 bg-slate-100/80 rounded-2xl p-2.5 border border-slate-200/80 shadow-xs flex flex-col shrink-0 max-h-full transition-all snap-center sm:snap-align-none"
+      className="w-[85vw] sm:w-72 bg-slate-100/80 rounded-2xl p-2.5 border border-slate-200/80 shadow-xs flex flex-col shrink-0 h-full max-h-full transition-all"
     >
       {/* Column Header */}
       <div className="flex items-center justify-between px-3 py-2 mb-2 select-none relative">
@@ -185,7 +185,7 @@ export const Column: React.FC<ColumnProps> = ({
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`flex-1 overflow-y-auto px-1.5 pb-2 rounded-xl transition-colors min-h-[150px] ${
+            className={`flex-1 overflow-y-auto px-1.5 pb-2 rounded-xl transition-colors min-h-[250px] flex flex-col ${
               snapshot.isDraggingOver ? 'bg-indigo-50/50 ring-2 ring-indigo-200/50' : ''
             }`}
           >

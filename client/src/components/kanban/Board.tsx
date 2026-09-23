@@ -58,20 +58,20 @@ export const Board: React.FC<BoardProps> = ({
 
         // --- 1. HORIZONTAL AUTO-SCROLL (Board canvas edges) ---
         const isMobile = window.innerWidth < 640;
-        const hThreshold = isMobile ? 60 : 140; // Adapted edge zone for mobile screens
-        const maxHSpeed = isMobile ? 20 : 26;   // Max speed px/frame
+        const hThreshold = isMobile ? 110 : 160; // Generous trigger zone near screen/canvas edges
+        const maxHSpeed = isMobile ? 24 : 30;    // Max scroll speed px/frame
 
-        // Near Left edge
-        if (mouseX > rect.left - 40 && mouseX < rect.left + hThreshold) {
-          const ratio = Math.max(0, Math.min(1, (rect.left + hThreshold - mouseX) / hThreshold));
-          const speed = Math.round(ratio * (maxHSpeed - 4) + 4);
+        // Near or past Left edge
+        if (mouseX <= rect.left + hThreshold) {
+          const ratio = Math.max(0.2, Math.min(1, (rect.left + hThreshold - mouseX) / hThreshold));
+          const speed = Math.round(ratio * (maxHSpeed - 6) + 6);
           container.scrollLeft -= speed;
         }
-        // Near Right edge
-        else if (mouseX < rect.right + 40 && mouseX > rect.right - hThreshold) {
-          const ratio = Math.max(0, Math.min(1, (mouseX - (rect.right - hThreshold)) / hThreshold));
-          const speed = Math.round(ratio * (maxHSpeed - 4) + 4);
-          container.scrollLeft -= speed;
+        // Near or past Right edge
+        else if (mouseX >= rect.right - hThreshold) {
+          const ratio = Math.max(0.2, Math.min(1, (mouseX - (rect.right - hThreshold)) / hThreshold));
+          const speed = Math.round(ratio * (maxHSpeed - 6) + 6);
+          container.scrollLeft += speed;
         }
 
         // --- 2. VERTICAL AUTO-SCROLL (Inside individual columns) ---
@@ -84,16 +84,16 @@ export const Board: React.FC<BoardProps> = ({
               el.classList.contains('overflow-y-auto')
             ) {
               const colRect = el.getBoundingClientRect();
-              const vThreshold = isMobile ? 60 : 90;
-              const maxVSpeed = 20;
+              const vThreshold = isMobile ? 70 : 100;
+              const maxVSpeed = 22;
 
-              if (mouseY > colRect.top - 20 && mouseY < colRect.top + vThreshold) {
-                const ratio = Math.max(0, Math.min(1, (colRect.top + vThreshold - mouseY) / vThreshold));
-                const speed = Math.round(ratio * (maxVSpeed - 3) + 3);
+              if (mouseY <= colRect.top + vThreshold) {
+                const ratio = Math.max(0.2, Math.min(1, (colRect.top + vThreshold - mouseY) / vThreshold));
+                const speed = Math.round(ratio * (maxVSpeed - 4) + 4);
                 el.scrollTop -= speed;
-              } else if (mouseY < colRect.bottom + 20 && mouseY > colRect.bottom - vThreshold) {
-                const ratio = Math.max(0, Math.min(1, (mouseY - (colRect.bottom - vThreshold)) / vThreshold));
-                const speed = Math.round(ratio * (maxVSpeed - 3) + 3);
+              } else if (mouseY >= colRect.bottom - vThreshold) {
+                const ratio = Math.max(0.2, Math.min(1, (mouseY - (colRect.bottom - vThreshold)) / vThreshold));
+                const speed = Math.round(ratio * (maxVSpeed - 4) + 4);
                 el.scrollTop += speed;
               }
               break;
@@ -110,15 +110,13 @@ export const Board: React.FC<BoardProps> = ({
     }
   }, []);
 
-  // Track global pointer position (mouse + touch) and clean up on pointer release
+  // Track global pointer position (mouse + touch) in capture phase so nothing blocks it
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mousePosRef.current = { x: e.clientX, y: e.clientY };
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches && e.touches.length > 0) {
+    const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      if ('touches' in e && e.touches.length > 0) {
         mousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      } else if ('clientX' in e) {
+        mousePosRef.current = { x: e.clientX, y: e.clientY };
       }
     };
 
@@ -128,19 +126,21 @@ export const Board: React.FC<BoardProps> = ({
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('mouseup', handlePointerEnd, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('touchend', handlePointerEnd, { passive: true });
-    window.addEventListener('touchcancel', handlePointerEnd, { passive: true });
+    window.addEventListener('mousemove', handlePointerMove, { capture: true, passive: true });
+    window.addEventListener('touchmove', handlePointerMove, { capture: true, passive: true });
+    window.addEventListener('touchstart', handlePointerMove, { capture: true, passive: true });
+    window.addEventListener('mouseup', handlePointerEnd, { capture: true, passive: true });
+    window.addEventListener('touchend', handlePointerEnd, { capture: true, passive: true });
+    window.addEventListener('touchcancel', handlePointerEnd, { capture: true, passive: true });
 
     return () => {
       stopAutoScroll();
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handlePointerEnd);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handlePointerEnd);
-      window.removeEventListener('touchcancel', handlePointerEnd);
+      window.removeEventListener('mousemove', handlePointerMove, { capture: true });
+      window.removeEventListener('touchmove', handlePointerMove, { capture: true });
+      window.removeEventListener('touchstart', handlePointerMove, { capture: true });
+      window.removeEventListener('mouseup', handlePointerEnd, { capture: true });
+      window.removeEventListener('touchend', handlePointerEnd, { capture: true });
+      window.removeEventListener('touchcancel', handlePointerEnd, { capture: true });
     };
   }, [stopAutoScroll]);
 
@@ -247,10 +247,10 @@ export const Board: React.FC<BoardProps> = ({
       {/* Scrollable Columns Area */}
       <div
         ref={boardContainerRef}
-        className="flex-1 overflow-x-auto overflow-y-hidden p-3 sm:p-6 scroll-smooth snap-x snap-mandatory sm:snap-none"
+        className="flex-1 overflow-x-auto overflow-y-hidden p-3 sm:p-6 select-none"
       >
         <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-          <div className="flex items-start gap-3 sm:gap-4 h-full">
+          <div className="flex items-stretch gap-3 sm:gap-4 h-full pb-2">
             {board.columns.map((column, colIdx) => {
               const prevCol = colIdx > 0 ? board.columns[colIdx - 1] : undefined;
               const nextCol = colIdx < board.columns.length - 1 ? board.columns[colIdx + 1] : undefined;
