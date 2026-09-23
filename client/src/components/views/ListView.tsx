@@ -133,13 +133,13 @@ export const ListView: React.FC<ListViewProps> = ({
 
   return (
     <>
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-24">
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-48">
+        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-visible min-h-[260px]">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
               <tr>
                 {/* Select All Checkbox */}
-                <th className="py-3 px-3 w-10 text-center">
+                <th className="py-3 px-3 w-10 text-center rounded-tl-2xl">
                   <input
                     type="checkbox"
                     checked={isAllSelected}
@@ -158,7 +158,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 <th className="py-3 px-4">Priority</th>
                 <th className="py-3 px-4">Assignee</th>
                 <th className="py-3 px-4">Due Date</th>
-                {onDeleteCard && <th className="py-3 px-4 text-right">Actions</th>}
+                {onDeleteCard && <th className="py-3 px-4 text-right rounded-tr-2xl">Actions</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

@@ -62,13 +62,30 @@ export function Select<T extends string | number>({
     };
   }, [isOpen]);
 
+  const [openUpwards, setOpenUpwards] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      if (spaceBelow < 220 && rect.top > spaceBelow) {
+        setOpenUpwards(true);
+      } else {
+        setOpenUpwards(false);
+      }
+    }
+  }, [isOpen]);
+
   const handleSelect = (optValue: T) => {
     onChange(optValue);
     setIsOpen(false);
   };
 
   return (
-    <div className={`relative inline-block w-full ${className}`} ref={containerRef}>
+    <div
+      className={`relative inline-block w-full ${className} ${isOpen ? 'z-40' : ''}`}
+      ref={containerRef}
+    >
       {/* Trigger Button */}
       <button
         type="button"
@@ -109,7 +126,9 @@ export function Select<T extends string | number>({
       {/* Floating Dropdown Menu */}
       {isOpen && (
         <div
-          className={`absolute z-50 mt-1.5 left-0 w-full min-w-[160px] bg-white rounded-xl shadow-xl border border-slate-200/90 py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100 select-none ${menuClassName}`}
+          className={`absolute z-50 ${
+            openUpwards ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
+          } left-0 w-full min-w-[160px] bg-white rounded-xl shadow-xl border border-slate-200/90 py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100 select-none ${menuClassName}`}
           onClick={(e) => e.stopPropagation()}
         >
           {options.length === 0 ? (
