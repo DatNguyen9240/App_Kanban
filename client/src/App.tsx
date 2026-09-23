@@ -147,12 +147,17 @@ export const App: React.FC = () => {
     cardId: string,
     targetColumnId: string,
     prevCardId?: string,
-    nextCardId?: string
+    nextCardId?: string,
+    destinationIndex?: number
   ) => {
     if (!currentBoard) return;
 
-    // Optimistic local state update
-    const previousColumns = [...currentBoard.columns];
+    // Deep clone columns for safe optimistic rollback
+    const previousColumns = currentBoard.columns.map((col) => ({
+      ...col,
+      cards: [...(col.cards || [])],
+    }));
+
     let movedCard: Card | null = null;
 
     const newColumns = currentBoard.columns.map((col) => {
@@ -162,13 +167,23 @@ export const App: React.FC = () => {
         movedCard = { ...found, column_id: targetColumnId };
         return { ...col, cards: colCards.filter((c) => c.id !== cardId) };
       }
-      return { ...col, cards: colCards };
+      return { ...col, cards: [...colCards] };
     });
 
     if (movedCard) {
       const targetCol = newColumns.find((c) => c.id === targetColumnId);
       if (targetCol) {
-        targetCol.cards = [...(targetCol.cards || []), movedCard];
+        const cards = [...(targetCol.cards || [])];
+        if (
+          destinationIndex !== undefined &&
+          destinationIndex >= 0 &&
+          destinationIndex <= cards.length
+        ) {
+          cards.splice(destinationIndex, 0, movedCard);
+        } else {
+          cards.push(movedCard);
+        }
+        targetCol.cards = cards;
       }
       setCurrentBoard({ ...currentBoard, columns: newColumns });
     }

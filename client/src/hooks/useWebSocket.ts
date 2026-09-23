@@ -19,11 +19,9 @@ export function useWebSocket(
     let wsUrl = '';
     if (import.meta.env.VITE_WS_URL) {
       wsUrl = `${import.meta.env.VITE_WS_URL}?board_id=${boardId}`;
-    } else if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      wsUrl = `ws://localhost:8080/api/v1/ws?board_id=${boardId}`;
     } else if (typeof window !== 'undefined') {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      wsUrl = `${protocol}//${window.location.host}/api/v1/ws?board_id=${boardId}`;
+      wsUrl = `${protocol}//${window.location.hostname}:8080/api/v1/ws?board_id=${boardId}`;
     }
 
     const socket = new WebSocket(wsUrl);

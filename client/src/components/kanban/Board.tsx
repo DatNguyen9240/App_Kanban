@@ -11,7 +11,8 @@ interface BoardProps {
     cardId: string,
     targetColumnId: string,
     prevCardId?: string,
-    nextCardId?: string
+    nextCardId?: string,
+    destinationIndex?: number
   ) => void;
   onSelectCard: (card: CardType) => void;
   onQuickAddCard: (columnId: string, title: string) => void;
@@ -208,7 +209,13 @@ export const Board: React.FC<BoardProps> = ({
       nextCardId = targetCards[destination.index]?.id;
     }
 
-    onMoveCard(draggableId, destination.droppableId, prevCardId, nextCardId);
+    onMoveCard(
+      draggableId,
+      destination.droppableId,
+      prevCardId,
+      nextCardId,
+      destination.index
+    );
   };
 
   const handleCreateColumn = (e: React.FormEvent) => {
@@ -220,7 +227,7 @@ export const Board: React.FC<BoardProps> = ({
   };
 
   return (
-    <div className="relative flex-1 flex flex-col overflow-hidden min-h-0">
+    <div className="relative flex-1 flex flex-col overflow-hidden min-h-0 h-full">
       {/* Mobile Column Navigation Pills */}
       <div className="flex sm:hidden items-center gap-1.5 px-3 py-2 bg-slate-50/90 backdrop-blur-md border-b border-slate-200/80 overflow-x-auto shrink-0 select-none">
         {board.columns.map((col) => (
@@ -247,7 +254,7 @@ export const Board: React.FC<BoardProps> = ({
       {/* Scrollable Columns Area */}
       <div
         ref={boardContainerRef}
-        className="flex-1 overflow-x-auto overflow-y-hidden p-3 sm:p-6 select-none"
+        className="flex-1 h-full overflow-x-auto overflow-y-hidden p-3 sm:p-6 select-none"
       >
         <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <div className="flex items-stretch gap-3 sm:gap-4 h-full pb-2">
