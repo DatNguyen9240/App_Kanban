@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, Image as ImageIcon, Link as LinkIcon, X, Loader2, RefreshCw } from 'lucide-react';
+import { UploadCloud, Link as LinkIcon, X, Loader2, RefreshCw } from 'lucide-react';
 import { api } from '../../services/api';
 
 interface ImageUploadProps {
@@ -41,8 +41,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       setError(null);
       const res = await api.uploadFile(file);
       onChange(res.url);
-    } catch (err: any) {
-      setError(err?.message || 'Failed to upload image');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to upload image');
     } finally {
       setIsUploading(false);
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Sparkles } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 import { Column, Priority } from '../../types/kanban';
 import { Select, PRIORITY_OPTIONS, SelectOption } from '../common/Select';
 import { ImageUpload } from '../common/ImageUpload';

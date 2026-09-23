@@ -4,9 +4,6 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Clock,
-  Sparkles,
-  Check,
 } from 'lucide-react';
 
 interface DatePickerProps {

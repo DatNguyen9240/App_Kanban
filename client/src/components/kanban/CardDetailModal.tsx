@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   X,
-  Calendar,
-  CheckSquare,
-  MessageSquare,
-  Clock,
   Trash2,
   Send,
-  User,
-  Tag,
-  AlertCircle,
-  Paperclip,
   Image as ImageIcon,
 } from 'lucide-react';
 import { Card, Column, Priority } from '../../types/kanban';
