@@ -26,16 +26,6 @@ export const NewColumnModal: React.FC<NewColumnModalProps> = ({
   const [name, setName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colorOptions[0]);
 
-  if (!isOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-    onSubmit(name.trim(), selectedColor);
-    setName('');
-    onClose();
-  };
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -46,6 +36,16 @@ export const NewColumnModal: React.FC<NewColumnModalProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    onSubmit(name.trim(), selectedColor);
+    setName('');
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>

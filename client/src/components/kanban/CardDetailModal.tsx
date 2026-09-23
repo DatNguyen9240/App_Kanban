@@ -36,13 +36,31 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
   onToggleChecklist,
   onAddChecklistItem,
 }) => {
-  if (!card) return null;
-
-  const [title, setTitle] = useState(card.title);
-  const [description, setDescription] = useState(card.description || '');
+  const [title, setTitle] = useState(card?.title || '');
+  const [description, setDescription] = useState(card?.description || '');
   const [commentText, setCommentText] = useState('');
   const [newCheckItem, setNewCheckItem] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  useEffect(() => {
+    if (card) {
+      setTitle(card.title);
+      setDescription(card.description || '');
+    }
+  }, [card]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !showDeleteModal && card) {
+        e.stopImmediatePropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose, showDeleteModal, card]);
+
+  if (!card) return null;
 
   const currentColumn = columns.find((c) => c.id === card.column_id);
 
@@ -64,17 +82,6 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
     onAddComment(card.id, commentText.trim());
     setCommentText('');
   };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !showDeleteModal) {
-        e.stopImmediatePropagation();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, showDeleteModal]);
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4" onClick={onClose}>

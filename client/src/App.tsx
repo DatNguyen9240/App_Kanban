@@ -467,53 +467,66 @@ export const App: React.FC = () => {
       </div>
 
       {/* Modals */}
-      <CardDetailModal
-        card={selectedCard}
-        columns={currentBoard?.columns || []}
-        onClose={() => setSelectedCard(null)}
-        onUpdate={handleUpdateCard}
-        onDelete={handleDeleteCard}
-        onAddComment={handleAddComment}
-        onToggleChecklist={handleToggleChecklist}
-        onAddChecklistItem={handleAddChecklistItem}
-      />
+      {selectedCard && (
+        <CardDetailModal
+          card={selectedCard}
+          columns={currentBoard?.columns || []}
+          onClose={() => setSelectedCard(null)}
+          onUpdate={handleUpdateCard}
+          onDelete={handleDeleteCard}
+          onAddComment={handleAddComment}
+          onToggleChecklist={handleToggleChecklist}
+          onAddChecklistItem={handleAddChecklistItem}
+        />
+      )}
 
-      <NewCardModal
-        isOpen={isNewCardOpen}
-        columns={currentBoard?.columns || []}
-        onClose={() => setIsNewCardOpen(false)}
-        onSubmit={handleCreateCard}
-      />
+      {isNewCardOpen && (
+        <NewCardModal
+          isOpen={isNewCardOpen}
+          columns={currentBoard?.columns || []}
+          onClose={() => setIsNewCardOpen(false)}
+          onSubmit={handleCreateCard}
+        />
+      )}
 
-      <NewProjectModal
-        isOpen={isNewProjectOpen}
-        onClose={() => setIsNewProjectOpen(false)}
-        onSubmit={handleCreateProject}
-      />
+      {isNewProjectOpen && (
+        <NewProjectModal
+          isOpen={isNewProjectOpen}
+          onClose={() => setIsNewProjectOpen(false)}
+          onSubmit={handleCreateProject}
+        />
+      )}
 
-      <NewColumnModal
-        isOpen={isNewColumnOpen}
-        onClose={() => setIsNewColumnOpen(false)}
-        onSubmit={(name, color) => handleAddColumn(name, color)}
-      />
+      {isNewColumnOpen && (
+        <NewColumnModal
+          isOpen={isNewColumnOpen}
+          onClose={() => setIsNewColumnOpen(false)}
+          onSubmit={(name, color) => handleAddColumn(name, color)}
+        />
+      )}
 
-      <CommandPalette
-        isOpen={isCommandOpen}
-        onClose={() => setIsCommandOpen(false)}
-        onNewIssue={() => setIsNewCardOpen(true)}
-        onSelectView={(v) => setCurrentView(v)}
-      />
+      {isCommandOpen && (
+        <CommandPalette
+          isOpen={isCommandOpen}
+          onClose={() => setIsCommandOpen(false)}
+          onNewIssue={() => setIsNewCardOpen(true)}
+          onSelectView={(v) => setCurrentView(v)}
+        />
+      )}
 
-      <InboxModal
-        isOpen={isInboxOpen}
-        onClose={() => setIsInboxOpen(false)}
-      />
+      {isInboxOpen && (
+        <InboxModal
+          isOpen={isInboxOpen}
+          onClose={() => setIsInboxOpen(false)}
+        />
+      )}
 
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        workspaceName={workspace?.name}
-        onResetBoard={async () => {
+      {isSettingsOpen && (
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          workspaceName={workspace?.name}
+          onResetBoard={async () => {
           if (!currentBoard) return;
           // Delete all cards in all columns
           for (const col of currentBoard.columns) {
@@ -524,6 +537,7 @@ export const App: React.FC = () => {
           await refreshBoard();
         }}
       />
+      )}
     </div>
   );
 };
