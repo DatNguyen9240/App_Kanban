@@ -50,13 +50,20 @@ export const Card: React.FC<CardProps> = ({ card, index, density, onSelect }) =>
             snapshot.isDragging ? 'shadow-xl ring-2 ring-indigo-500/20 rotate-1 scale-[1.02]' : ''
           }`}
         >
-          {/* Card Cover (PLANKA style) */}
+          {/* Card Cover */}
           {card.cover_image_url && density !== 'compact' && (
-            <div className="h-28 w-full overflow-hidden bg-slate-100 border-b border-slate-100">
+            <div className="relative w-full max-h-48 min-h-[130px] overflow-hidden bg-slate-900/5 border-b border-slate-100 flex items-center justify-center">
+              {/* Ambient blur for background */}
+              <img
+                src={card.cover_image_url}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover blur-md opacity-30 scale-110 pointer-events-none"
+              />
+              {/* Crisp uncropped image */}
               <img
                 src={card.cover_image_url}
                 alt={card.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="relative max-h-48 w-auto max-w-full object-contain z-10 py-1 transition-transform duration-300 group-hover:scale-105"
               />
             </div>
           )}

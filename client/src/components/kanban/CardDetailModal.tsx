@@ -135,13 +135,20 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
         {/* Cover Image Banner */}
         {card.cover_image_url && (
-          <div className="relative h-44 w-full bg-slate-100 border-b border-slate-100 group overflow-hidden shrink-0">
+          <div className="relative max-h-80 min-h-[220px] w-full bg-slate-900/5 border-b border-slate-100 group overflow-hidden shrink-0 flex items-center justify-center">
+            {/* Ambient blur background */}
+            <img
+              src={card.cover_image_url}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none"
+            />
+            {/* Sharp uncropped image */}
             <img
               src={card.cover_image_url}
               alt="Cover"
-              className="w-full h-full object-cover"
+              className="relative max-h-80 w-auto max-w-full object-contain z-10 py-2 drop-shadow-sm transition-transform duration-200"
             />
-            <div className="absolute bottom-3 right-3 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
+            <div className="absolute bottom-3 right-3 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity z-20">
               <button
                 type="button"
                 onClick={() => setShowCoverUpload(!showCoverUpload)}
@@ -167,11 +174,12 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
           <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 animate-in fade-in duration-150 shrink-0">
             <ImageUpload
               value={card.cover_image_url}
+              showPreview={!card.cover_image_url}
               onChange={(newUrl) => {
                 onUpdate(card.id, { cover_image_url: newUrl || '' });
                 if (!newUrl) setShowCoverUpload(false);
               }}
-              label="Card Cover Image"
+              label={card.cover_image_url ? 'Replace Card Cover' : 'Add Card Cover'}
             />
           </div>
         )}

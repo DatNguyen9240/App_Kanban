@@ -7,6 +7,7 @@ interface ImageUploadProps {
   onChange: (url: string | undefined) => void;
   label?: string;
   className?: string;
+  showPreview?: boolean;
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -14,6 +15,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   onChange,
   label = 'Cover Image',
   className = '',
+  showPreview = true,
 }) => {
   const [mode, setMode] = useState<'upload' | 'url'>('upload');
   const [urlInput, setUrlInput] = useState(value || '');
@@ -90,7 +92,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         <label className="block text-xs font-semibold text-slate-700">
           {label}
         </label>
-        {!value && (
+        {(!value || !showPreview) && (
           <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[11px] font-medium">
             <button
               type="button"
@@ -118,16 +120,23 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         )}
       </div>
 
-      {/* When Image Exists: Preview with Change & Remove Actions */}
-      {value ? (
-        <div className="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-100 max-h-48">
+      {/* When Image Exists and Preview enabled: Full aspect-ratio clear image with ambient blur */}
+      {value && showPreview ? (
+        <div className="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-900/5 max-h-64 min-h-[160px] flex items-center justify-center">
+          {/* Ambient blur background */}
+          <img
+            src={value}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none"
+          />
+          {/* Sharp uncropped image */}
           <img
             src={value}
             alt="Cover preview"
-            className="w-full h-36 object-cover"
+            className="relative max-h-64 w-auto max-w-full object-contain z-10 py-2 drop-shadow-xs"
             onError={() => setError('Failed to load image from URL')}
           />
-          <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+          <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
