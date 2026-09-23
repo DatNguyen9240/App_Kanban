@@ -71,9 +71,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <Inbox className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
               <span>Inbox</span>
             </div>
-            <span className="text-[10px] bg-slate-100 text-slate-500 font-semibold px-1.5 py-0.5 rounded-full">
-              3
-            </span>
           </button>
           <button
             onClick={onToggleMyIssues}
@@ -202,14 +199,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Footer Profile */}
       <div className="p-3 border-t border-slate-100 bg-slate-50/50">
         <div className="flex items-center gap-2.5">
-          <img
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-            alt="Alex Morgan"
-            className="w-8 h-8 rounded-full object-cover border border-slate-200"
-          />
+          <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs border border-indigo-200">
+            A
+          </div>
           <div className="truncate flex-1">
-            <p className="text-xs font-semibold text-slate-800 truncate">Alex Morgan</p>
-            <p className="text-[10px] text-slate-500 truncate">demo@kanban.dev</p>
+            <p className="text-xs font-semibold text-slate-800 truncate">Admin</p>
+            <p className="text-[10px] text-slate-500 truncate">admin@kanban.dev</p>
           </div>
           <button
             onClick={() => alert('Settings: Workspace and Account preferences configured!')}

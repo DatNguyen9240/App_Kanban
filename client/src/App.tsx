@@ -335,7 +335,7 @@ export const App: React.FC = () => {
               c.issue_key.toLowerCase().includes(searchQuery.toLowerCase()) ||
               c.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-            const matchesMyIssues = !isMyIssues || c.assignees?.some((u) => u.full_name.includes('Alex'));
+            const matchesMyIssues = !isMyIssues || (c.assignees && c.assignees.length > 0);
             return matchesQuery && matchesMyIssues;
           }),
         })),
