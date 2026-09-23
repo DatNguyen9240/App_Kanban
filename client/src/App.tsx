@@ -485,6 +485,8 @@ export const App: React.FC = () => {
                   board={filteredBoard}
                   onSelectCard={setSelectedCard}
                   onDeleteCard={handleDeleteCard}
+                  onUpdateCard={handleUpdateCard}
+                  onToggleChecklist={handleToggleChecklist}
                 />
               )}
 
