@@ -36,6 +36,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           // Trigger handled in parent
         }
       } else if (e.key === 'Escape' && isOpen) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };

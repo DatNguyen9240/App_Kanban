@@ -39,6 +39,7 @@ export const NewColumnModal: React.FC<NewColumnModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };

@@ -70,6 +70,7 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };

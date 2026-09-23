@@ -39,6 +39,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen && !showResetConfirm) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };

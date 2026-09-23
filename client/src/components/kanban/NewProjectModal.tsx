@@ -46,6 +46,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };

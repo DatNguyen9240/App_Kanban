@@ -67,6 +67,12 @@ export const Header: React.FC<HeaderProps> = ({
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.currentTarget.blur();
+                if (searchQuery) onSearchChange('');
+              }
+            }}
             className="pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white w-24 sm:w-44 focus:w-36 sm:focus:w-52 transition-all"
           />
         </div>

@@ -56,15 +56,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     const handleClose = () => setContextMenu(null);
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setContextMenu(null);
+      if (e.key === 'Escape' && contextMenu) {
+        e.stopImmediatePropagation();
+        setContextMenu(null);
+      }
     };
     window.addEventListener('click', handleClose);
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
     return () => {
       window.removeEventListener('click', handleClose);
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, []);
+  }, [contextMenu]);
 
   return (
     <>

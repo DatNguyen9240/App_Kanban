@@ -47,6 +47,7 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };

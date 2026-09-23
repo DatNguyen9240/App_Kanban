@@ -36,8 +36,20 @@ export const Column: React.FC<ColumnProps> = ({
         setShowMenu(false);
       }
     };
-    if (showMenu) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showMenu) {
+        e.stopImmediatePropagation();
+        setShowMenu(false);
+      }
+    };
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('keydown', handleKeyDown, true);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown, true);
+    };
   }, [showMenu]);
 
   const handleQuickAdd = (e: React.FormEvent) => {

@@ -68,6 +68,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !showDeleteModal) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };

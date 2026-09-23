@@ -24,15 +24,16 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   variant = 'danger',
   isLoading = false,
 }) => {
-  // Close on Escape key
+  // Close on Escape key (capture phase to ensure top-level precedence)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen && !isLoading) {
+        e.stopImmediatePropagation();
         onClose();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [isOpen, isLoading, onClose]);
 
   if (!isOpen) return null;
