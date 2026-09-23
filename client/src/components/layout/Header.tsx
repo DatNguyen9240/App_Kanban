@@ -20,6 +20,7 @@ interface HeaderProps {
   density: CardDensity;
   onDensityChange: (d: CardDensity) => void;
   onToggleSidebar?: () => void;
+  onOpenNewColumn?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   density,
   onDensityChange,
   onToggleSidebar,
+  onOpenNewColumn,
 }) => {
   return (
     <header className="h-14 border-b border-slate-200 bg-white/80 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between shrink-0 z-10 gap-2">
@@ -109,6 +111,18 @@ export const Header: React.FC<HeaderProps> = ({
             <Maximize2 className="w-3.5 h-3.5" />
           </button>
         </div>
+
+        {/* Add Column Button */}
+        {onOpenNewColumn && (
+          <button
+            onClick={onOpenNewColumn}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold shadow-xs transition-all active:scale-95 shrink-0"
+            title="Create New Column"
+          >
+            <Plus className="w-3.5 h-3.5 text-slate-500" />
+            <span className="hidden sm:inline">Add Column</span>
+          </button>
+        )}
 
         {/* New Issue Button */}
         <button

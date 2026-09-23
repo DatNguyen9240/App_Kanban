@@ -57,7 +57,7 @@ export const Column: React.FC<ColumnProps> = ({
   };
 
   return (
-    <div className="w-80 flex flex-col shrink-0 max-h-full">
+    <div className="w-72 bg-slate-100/80 rounded-2xl p-2.5 border border-slate-200/80 shadow-xs flex flex-col shrink-0 max-h-full transition-all">
       {/* Column Header */}
       <div className="flex items-center justify-between px-3 py-2 mb-2 select-none relative">
         <div className="flex items-center gap-2 flex-1 mr-2">
@@ -202,9 +202,9 @@ export const Column: React.FC<ColumnProps> = ({
             ) : (
               <button
                 onClick={() => setIsAdding(true)}
-                className="w-full py-2 flex items-center justify-center gap-1.5 text-xs text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-lg transition-colors border border-dashed border-transparent hover:border-slate-300"
+                className="w-full py-1.5 flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-white rounded-xl transition-all border border-transparent hover:border-slate-200/90 shadow-2xs mt-1"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3.5 h-3.5 text-slate-400" />
                 <span>Add card</span>
               </button>
             )}

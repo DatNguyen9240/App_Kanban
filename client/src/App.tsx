@@ -8,6 +8,7 @@ import { TimelineView } from './components/views/TimelineView';
 import { CardDetailModal } from './components/kanban/CardDetailModal';
 import { NewCardModal } from './components/kanban/NewCardModal';
 import { NewProjectModal } from './components/kanban/NewProjectModal';
+import { NewColumnModal } from './components/kanban/NewColumnModal';
 import { CommandPalette } from './components/command/CommandPalette';
 import { InboxModal } from './components/modals/InboxModal';
 import { SettingsModal } from './components/modals/SettingsModal';
@@ -42,6 +43,7 @@ export const App: React.FC = () => {
   const [isInboxOpen, setIsInboxOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNewColumnOpen, setIsNewColumnOpen] = useState(false);
 
   // 1. Initial Load
   const loadData = async () => {
@@ -226,10 +228,10 @@ export const App: React.FC = () => {
   };
 
   // 11. Add Column
-  const handleAddColumn = async (name: string) => {
+  const handleAddColumn = async (name: string, color?: string) => {
     if (!currentBoard) return;
     try {
-      await api.createColumn(currentBoard.id, name);
+      await api.createColumn(currentBoard.id, name, color);
       refreshBoard();
     } catch (err) {
       console.error('Failed to create column:', err);
@@ -390,6 +392,7 @@ export const App: React.FC = () => {
           density={density}
           onDensityChange={setDensity}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          onOpenNewColumn={() => setIsNewColumnOpen(true)}
         />
 
         {/* View Content */}
@@ -448,6 +451,12 @@ export const App: React.FC = () => {
         isOpen={isNewProjectOpen}
         onClose={() => setIsNewProjectOpen(false)}
         onSubmit={handleCreateProject}
+      />
+
+      <NewColumnModal
+        isOpen={isNewColumnOpen}
+        onClose={() => setIsNewColumnOpen(false)}
+        onSubmit={(name, color) => handleAddColumn(name, color)}
       />
 
       <CommandPalette

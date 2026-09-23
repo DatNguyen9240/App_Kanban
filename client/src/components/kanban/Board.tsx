@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Board as BoardType, Card as CardType, CardDensity } from '../../types/kanban';
 import { Column } from './Column';
 
@@ -32,6 +32,14 @@ export const Board: React.FC<BoardProps> = ({
 }) => {
   const [isAddingCol, setIsAddingCol] = useState(false);
   const [colName, setColName] = useState('');
+  const boardContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollBoard = (direction: 'left' | 'right') => {
+    if (boardContainerRef.current) {
+      const scrollAmount = direction === 'left' ? -350 : 350;
+      boardContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -72,67 +80,94 @@ export const Board: React.FC<BoardProps> = ({
   };
 
   return (
-    <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex items-start gap-5 h-full">
-          {board.columns.map((column) => (
-            <Column
-              key={column.id}
-              column={column}
-              density={density}
-              onSelectCard={onSelectCard}
-              onQuickAddCard={onQuickAddCard}
-              onDeleteColumn={onDeleteColumn}
-              onUpdateColumn={onUpdateColumn}
-            />
-          ))}
+    <div className="relative flex-1 flex flex-col overflow-hidden min-h-0">
+      {/* Scrollable Columns Area */}
+      <div
+        ref={boardContainerRef}
+        className="flex-1 overflow-x-auto overflow-y-hidden p-6"
+      >
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <div className="flex items-start gap-4 h-full">
+            {board.columns.map((column) => (
+              <Column
+                key={column.id}
+                column={column}
+                density={density}
+                onSelectCard={onSelectCard}
+                onQuickAddCard={onQuickAddCard}
+                onDeleteColumn={onDeleteColumn}
+                onUpdateColumn={onUpdateColumn}
+              />
+            ))}
 
-          {/* Add Column button */}
-          <div className="w-80 shrink-0">
-            {isAddingCol ? (
-              <form
-                onSubmit={handleCreateColumn}
-                className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm"
-              >
-                <input
-                  type="text"
-                  autoFocus
-                  placeholder="Column name (e.g. QA)"
-                  value={colName}
-                  onChange={(e) => setColName(e.target.value)}
-                  className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2.5 px-2 py-1.5 border border-slate-200 rounded"
-                />
-                <div className="flex items-center justify-end gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsAddingCol(false);
-                      setColName('');
-                    }}
-                    className="px-2.5 py-1 text-xs text-slate-500 hover:bg-slate-100 rounded"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-3 py-1 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded shadow-xs"
-                  >
-                    Add Column
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <button
-                onClick={() => setIsAddingCol(true)}
-                className="w-full h-12 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-200/40 hover:bg-slate-200/80 rounded-xl border border-dashed border-slate-300 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Column</span>
-              </button>
-            )}
+            {/* Add Column button */}
+            <div className="w-72 shrink-0">
+              {isAddingCol ? (
+                <form
+                  onSubmit={handleCreateColumn}
+                  className="bg-white p-3.5 rounded-2xl border border-indigo-200 shadow-md animate-in zoom-in-95 duration-100"
+                >
+                  <input
+                    type="text"
+                    autoFocus
+                    placeholder="Column name (e.g. QA)"
+                    value={colName}
+                    onChange={(e) => setColName(e.target.value)}
+                    className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2.5 px-3 py-2 border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500"
+                  />
+                  <div className="flex items-center justify-end gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddingCol(false);
+                        setColName('');
+                      }}
+                      className="px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100 rounded-lg"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-3 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-xs"
+                    >
+                      Add Column
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  onClick={() => setIsAddingCol(true)}
+                  className="w-full h-12 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 hover:text-indigo-600 bg-slate-100/70 hover:bg-indigo-50/50 rounded-2xl border border-dashed border-slate-300/80 hover:border-indigo-300 transition-all shadow-2xs group"
+                >
+                  <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+                  <span>Add Column</span>
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      </DragDropContext>
+        </DragDropContext>
+      </div>
+
+      {/* Horizontal Scroll Quick Controls */}
+      <div className="absolute bottom-5 right-6 flex items-center gap-1.5 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-xl p-1 z-20 transition-all hover:shadow-lg">
+        <button
+          type="button"
+          onClick={() => scrollBoard('left')}
+          title="Scroll Left"
+          className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <span className="text-[10px] font-semibold text-slate-400 px-1 select-none">Columns</span>
+        <button
+          type="button"
+          onClick={() => scrollBoard('right')}
+          title="Scroll Right"
+          className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 };

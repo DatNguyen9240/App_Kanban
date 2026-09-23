@@ -237,6 +237,16 @@ func (h *BoardHandler) CreateProject(c *gin.Context) {
 	c.JSON(http.StatusCreated, project)
 }
 
+// DeleteProject deletes a project
+func (h *BoardHandler) DeleteProject(c *gin.Context) {
+	projectID := c.Param("id")
+	if err := h.db.Delete(&models.Project{}, "id = ?", projectID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Project deleted successfully"})
+}
+
 // HandleWebSocket upgrades connection and joins board room
 func (h *BoardHandler) HandleWebSocket(c *gin.Context) {
 	boardID := c.Query("board_id")

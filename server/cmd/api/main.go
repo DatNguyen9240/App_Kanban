@@ -66,6 +66,7 @@ func main() {
 		// Workspaces & Projects
 		api.GET("/workspaces", boardHandler.GetWorkspaces)
 		api.POST("/projects", boardHandler.CreateProject)
+		api.DELETE("/projects/:id", boardHandler.DeleteProject)
 		api.GET("/projects/:project_id/boards", boardHandler.GetBoards)
 
 		// Boards & Columns
