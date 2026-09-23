@@ -40,7 +40,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const isDanger = variant === 'danger';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
       <div
         className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden transform animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}

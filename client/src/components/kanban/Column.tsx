@@ -73,6 +73,12 @@ export const Column: React.FC<ColumnProps> = ({
                 value={colName}
                 onChange={(e) => setColName(e.target.value)}
                 onBlur={handleNameSubmit}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setIsEditingName(false);
+                    setColName(column.name);
+                  }
+                }}
                 className="w-full text-xs font-bold text-slate-800 uppercase px-1 py-0.5 border border-indigo-300 rounded focus:outline-none"
               />
             </form>
@@ -178,6 +184,12 @@ export const Column: React.FC<ColumnProps> = ({
                   placeholder="What needs to be done?"
                   value={quickTitle}
                   onChange={(e) => setQuickTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      setIsAdding(false);
+                      setQuickTitle('');
+                    }
+                  }}
                   className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2"
                 />
                 <div className="flex items-center justify-end gap-1.5">

@@ -113,6 +113,12 @@ export const Board: React.FC<BoardProps> = ({
                     placeholder="Column name (e.g. QA)"
                     value={colName}
                     onChange={(e) => setColName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') {
+                        setIsAddingCol(false);
+                        setColName('');
+                      }
+                    }}
                     className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2.5 px-3 py-2 border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500"
                   />
                   <div className="flex items-center justify-end gap-1.5">

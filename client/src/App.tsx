@@ -102,17 +102,44 @@ export const App: React.FC = () => {
     }
   });
 
-  // 4. Keyboard shortcuts (Ctrl+K)
+  // 4. Keyboard shortcuts (Ctrl+K and Escape)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         setIsCommandOpen((prev) => !prev);
+      } else if (e.key === 'Escape') {
+        if (isCommandOpen) {
+          setIsCommandOpen(false);
+        } else if (isNewCardOpen) {
+          setIsNewCardOpen(false);
+        } else if (isNewColumnOpen) {
+          setIsNewColumnOpen(false);
+        } else if (isNewProjectOpen) {
+          setIsNewProjectOpen(false);
+        } else if (isInboxOpen) {
+          setIsInboxOpen(false);
+        } else if (isSettingsOpen) {
+          setIsSettingsOpen(false);
+        } else if (selectedCard) {
+          setSelectedCard(null);
+        } else if (isSidebarOpen) {
+          setIsSidebarOpen(false);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [
+    isCommandOpen,
+    isNewCardOpen,
+    isNewColumnOpen,
+    isNewProjectOpen,
+    isInboxOpen,
+    isSettingsOpen,
+    selectedCard,
+    isSidebarOpen,
+  ]);
 
   // 5. Drag & Drop Move Card
   const handleMoveCard = async (
