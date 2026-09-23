@@ -11,11 +11,13 @@ import {
   Tag,
   AlertCircle,
   Paperclip,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { Card, Column, Priority } from '../../types/kanban';
 import { ConfirmModal } from '../common/ConfirmModal';
 import { DatePicker } from '../common/DatePicker';
 import { Select, PRIORITY_OPTIONS, SelectOption } from '../common/Select';
+import { ImageUpload } from '../common/ImageUpload';
 
 interface CardDetailModalProps {
   card: Card | null;
@@ -43,6 +45,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
   const [commentText, setCommentText] = useState('');
   const [newCheckItem, setNewCheckItem] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCoverUpload, setShowCoverUpload] = useState(false);
 
   useEffect(() => {
     if (card) {
@@ -109,7 +112,19 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setShowCoverUpload(!showCoverUpload)}
+              title={card.cover_image_url ? 'Change cover image' : 'Add cover image'}
+              className={`px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-xs font-semibold ${
+                showCoverUpload || card.cover_image_url
+                  ? 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+              }`}
+            >
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Cover</span>
+            </button>
             <button
               onClick={() => setShowDeleteModal(true)}
               title="Delete issue"
@@ -125,6 +140,49 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Cover Image Banner */}
+        {card.cover_image_url && (
+          <div className="relative h-44 w-full bg-slate-100 border-b border-slate-100 group overflow-hidden shrink-0">
+            <img
+              src={card.cover_image_url}
+              alt="Cover"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-3 right-3 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
+              <button
+                type="button"
+                onClick={() => setShowCoverUpload(!showCoverUpload)}
+                className="px-2.5 py-1.5 bg-black/60 hover:bg-black/80 backdrop-blur-sm text-white rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors shadow-sm"
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                <span>{showCoverUpload ? 'Close' : 'Change Cover'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onUpdate(card.id, { cover_image_url: '' })}
+                className="p-1.5 bg-black/60 hover:bg-rose-600 backdrop-blur-sm text-white rounded-lg transition-colors shadow-sm"
+                title="Remove Cover"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Expandable Image Upload Area */}
+        {showCoverUpload && (
+          <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 animate-in fade-in duration-150 shrink-0">
+            <ImageUpload
+              value={card.cover_image_url}
+              onChange={(newUrl) => {
+                onUpdate(card.id, { cover_image_url: newUrl || '' });
+                if (!newUrl) setShowCoverUpload(false);
+              }}
+              label="Card Cover Image"
+            />
+          </div>
+        )}
 
         {/* Modal Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">

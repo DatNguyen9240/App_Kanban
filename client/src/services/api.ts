@@ -150,4 +150,18 @@ export const api = {
     if (!res.ok) throw new Error('Failed to add comment');
     return res.json();
   },
+
+  async uploadFile(file: File): Promise<{ url: string; filename: string; size: number }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(`${API_BASE}/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to upload file');
+    }
+    return res.json();
+  },
 };

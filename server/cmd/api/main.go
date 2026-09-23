@@ -43,10 +43,17 @@ func main() {
 	authHandler := handlers.NewAuthHandler(db, cfg)
 	boardHandler := handlers.NewBoardHandler(db, hub)
 	cardHandler := handlers.NewCardHandler(db, hub)
+	uploadHandler := handlers.NewUploadHandler("./uploads")
+
+	// Serve static uploaded files
+	r.Static("/uploads", "./uploads")
 
 	// 5. Routes
 	api := r.Group("/api/v1")
 	{
+		// Upload
+		api.POST("/upload", uploadHandler.UploadFile)
+
 		// Health check
 		api.GET("/health", func(c *gin.Context) {
 			c.JSON(200, gin.H{

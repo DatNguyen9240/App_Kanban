@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Plus, Sparkles } from 'lucide-react';
 import { Column, Priority } from '../../types/kanban';
 import { Select, PRIORITY_OPTIONS, SelectOption } from '../common/Select';
+import { ImageUpload } from '../common/ImageUpload';
 
 interface NewCardModalProps {
   isOpen: boolean;
@@ -136,16 +137,11 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Cover Image URL (Optional)</label>
-            <input
-              type="url"
-              placeholder="https://images.unsplash.com/..."
-              value={coverUrl}
-              onChange={(e) => setCoverUrl(e.target.value)}
-              className="w-full text-xs text-slate-800 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
-          </div>
+          <ImageUpload
+            value={coverUrl}
+            onChange={(url) => setCoverUrl(url || '')}
+            label="Cover Image (Optional)"
+          />
 
           <div className="pt-2 flex items-center justify-end gap-2">
             <button
