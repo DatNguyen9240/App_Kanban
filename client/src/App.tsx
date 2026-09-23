@@ -13,6 +13,7 @@ import { NewColumnModal } from './components/kanban/NewColumnModal';
 import { CommandPalette } from './components/command/CommandPalette';
 import { InboxModal } from './components/modals/InboxModal';
 import { SettingsModal } from './components/modals/SettingsModal';
+import { FolderPlus, Plus } from 'lucide-react';
 import {
   Workspace,
   Project,
@@ -155,12 +156,13 @@ export const App: React.FC = () => {
     let movedCard: Card | null = null;
 
     const newColumns = currentBoard.columns.map((col) => {
-      const found = col.cards?.find((c) => c.id === cardId);
+      const colCards = col.cards || [];
+      const found = colCards.find((c) => c.id === cardId);
       if (found) {
         movedCard = { ...found, column_id: targetColumnId };
-        return { ...col, cards: col.cards.filter((c) => c.id !== cardId) };
+        return { ...col, cards: colCards.filter((c) => c.id !== cardId) };
       }
-      return col;
+      return { ...col, cards: colCards };
     });
 
     if (movedCard) {
@@ -433,43 +435,67 @@ export const App: React.FC = () => {
 
         {/* View Content */}
         <main className="flex-1 overflow-hidden flex flex-col">
-          {currentView === 'board' && filteredBoard && (
-            <Board
-              board={filteredBoard}
-              density={density}
-              onMoveCard={handleMoveCard}
-              onSelectCard={setSelectedCard}
-              onQuickAddCard={handleQuickAddCard}
-              onAddColumn={handleAddColumn}
-              onDeleteColumn={handleDeleteColumn}
-              onUpdateColumn={handleUpdateColumn}
-            />
-          )}
+          {!currentProject || !currentBoard ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50">
+              <div className="w-16 h-16 rounded-3xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-4 shadow-sm animate-in zoom-in-95 duration-200">
+                <FolderPlus className="w-8 h-8 text-indigo-600" />
+              </div>
+              <h2 className="text-base font-bold text-slate-900 mb-1">
+                No project selected
+              </h2>
+              <p className="text-xs text-slate-500 max-w-sm text-center mb-6">
+                There are no active projects in this workspace. Create a project to start organizing tasks, columns, and sprint boards.
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsNewProjectOpen(true)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create New Project</span>
+              </button>
+            </div>
+          ) : (
+            <>
+              {currentView === 'board' && filteredBoard && (
+                <Board
+                  board={filteredBoard}
+                  density={density}
+                  onMoveCard={handleMoveCard}
+                  onSelectCard={setSelectedCard}
+                  onQuickAddCard={handleQuickAddCard}
+                  onAddColumn={handleAddColumn}
+                  onDeleteColumn={handleDeleteColumn}
+                  onUpdateColumn={handleUpdateColumn}
+                />
+              )}
 
-          {currentView === 'my-issues' && (
-            <MyIssuesView
-              board={currentBoard}
-              searchQuery={searchQuery}
-              onSelectCard={setSelectedCard}
-              onDeleteCard={handleDeleteCard}
-              onNewIssue={() => setIsNewCardOpen(true)}
-            />
-          )}
+              {currentView === 'my-issues' && (
+                <MyIssuesView
+                  board={currentBoard}
+                  searchQuery={searchQuery}
+                  onSelectCard={setSelectedCard}
+                  onDeleteCard={handleDeleteCard}
+                  onNewIssue={() => setIsNewCardOpen(true)}
+                />
+              )}
 
-          {currentView === 'list' && filteredBoard && (
-            <ListView
-              board={filteredBoard}
-              onSelectCard={setSelectedCard}
-              onDeleteCard={handleDeleteCard}
-            />
-          )}
+              {currentView === 'list' && filteredBoard && (
+                <ListView
+                  board={filteredBoard}
+                  onSelectCard={setSelectedCard}
+                  onDeleteCard={handleDeleteCard}
+                />
+              )}
 
-          {currentView === 'calendar' && filteredBoard && (
-            <CalendarView board={filteredBoard} onSelectCard={setSelectedCard} />
-          )}
+              {currentView === 'calendar' && filteredBoard && (
+                <CalendarView board={filteredBoard} onSelectCard={setSelectedCard} />
+              )}
 
-          {currentView === 'timeline' && filteredBoard && (
-            <TimelineView board={filteredBoard} onSelectCard={setSelectedCard} />
+              {currentView === 'timeline' && filteredBoard && (
+                <TimelineView board={filteredBoard} onSelectCard={setSelectedCard} />
+              )}
+            </>
           )}
         </main>
       </div>

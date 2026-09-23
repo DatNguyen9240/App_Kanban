@@ -56,7 +56,7 @@ export const Board: React.FC<BoardProps> = ({
     if (!targetColumn) return;
 
     // Filter cards in destination column (excluding the dragged card if same column)
-    const targetCards = targetColumn.cards.filter((c) => c.id !== draggableId);
+    const targetCards = (targetColumn.cards || []).filter((c) => c.id !== draggableId);
 
     let prevCardId: string | undefined;
     let nextCardId: string | undefined;

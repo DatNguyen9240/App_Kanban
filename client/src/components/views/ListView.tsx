@@ -12,8 +12,8 @@ interface ListViewProps {
 export const ListView: React.FC<ListViewProps> = ({ board, onSelectCard, onDeleteCard }) => {
   const [cardToDelete, setCardToDelete] = useState<Card | null>(null);
 
-  const allCards = board.columns.flatMap((col) =>
-    col.cards.map((c) => ({ ...c, columnName: col.name, columnColor: col.color }))
+  const allCards = (board?.columns || []).flatMap((col) =>
+    (col.cards || []).map((c) => ({ ...c, columnName: col.name, columnColor: col.color }))
   );
 
   return (

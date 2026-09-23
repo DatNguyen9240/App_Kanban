@@ -43,7 +43,7 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
   }
 
   // Extract all cards across all columns with their column metadata
-  const allCards = board.columns.flatMap((col) =>
+  const allCards = (board.columns || []).flatMap((col) =>
     (col.cards || []).map((card) => ({
       ...card,
       columnName: col.name,

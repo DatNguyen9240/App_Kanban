@@ -8,8 +8,8 @@ interface TimelineViewProps {
 }
 
 export const TimelineView: React.FC<TimelineViewProps> = ({ board, onSelectCard }) => {
-  const allCards = board.columns.flatMap((col) =>
-    col.cards.map((c) => ({ ...c, columnColor: col.color, columnName: col.name }))
+  const allCards = (board?.columns || []).flatMap((col) =>
+    (col.cards || []).map((c) => ({ ...c, columnColor: col.color, columnName: col.name }))
   );
 
   const timelineDays = ['Sep 20', 'Sep 21', 'Sep 22', 'Sep 23 (Today)', 'Sep 24', 'Sep 25', 'Sep 26', 'Sep 27', 'Sep 28'];

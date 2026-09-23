@@ -231,63 +231,74 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <div className="space-y-1">
-              {workspace?.projects?.map((project) => {
-                const isActive = currentProject?.id === project.id;
-                return (
-                  <div
-                    key={project.id}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setContextMenu({
-                        x: Math.min(e.clientX, window.innerWidth - 190),
-                        y: Math.min(e.clientY, window.innerHeight - 100),
-                        project,
-                      });
-                    }}
-                    onClick={() => {
-                      onSelectProject(project);
-                      onClose?.();
-                    }}
-                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors group cursor-pointer ${
-                      isActive
-                        ? 'bg-slate-100 text-slate-900 font-semibold'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 truncate flex-1 min-w-0">
-                      <FolderGit2
-                        className="w-4 h-4 shrink-0"
-                        style={{ color: project.color || '#6366F1' }}
-                      />
-                      <span className="truncate">{project.name}</span>
-                    </div>
+              {!workspace?.projects || workspace.projects.length === 0 ? (
+                <button
+                  type="button"
+                  onClick={onNewProject}
+                  className="w-full py-2 px-2.5 flex items-center justify-center gap-1.5 text-xs text-indigo-600 font-medium hover:bg-indigo-50/60 rounded-xl transition-colors border border-dashed border-indigo-200 mt-1"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Create Project</span>
+                </button>
+              ) : (
+                workspace.projects.map((project) => {
+                  const isActive = currentProject?.id === project.id;
+                  return (
+                    <div
+                      key={project.id}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setContextMenu({
+                          x: Math.min(e.clientX, window.innerWidth - 190),
+                          y: Math.min(e.clientY, window.innerHeight - 100),
+                          project,
+                        });
+                      }}
+                      onClick={() => {
+                        onSelectProject(project);
+                        onClose?.();
+                      }}
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors group cursor-pointer ${
+                        isActive
+                          ? 'bg-slate-100 text-slate-900 font-semibold'
+                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 truncate flex-1 min-w-0">
+                        <FolderGit2
+                          className="w-4 h-4 shrink-0"
+                          style={{ color: project.color || '#6366F1' }}
+                        />
+                        <span className="truncate">{project.name}</span>
+                      </div>
 
-                    <div className="flex items-center gap-1 shrink-0">
-                      <span className="text-[10px] text-slate-400 font-mono group-hover:text-slate-500">
-                        {project.key}
-                      </span>
-                      {/* 3-dots trigger button on hover */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          setContextMenu({
-                            x: Math.min(rect.right - 140, window.innerWidth - 190),
-                            y: Math.min(rect.bottom + 4, window.innerHeight - 100),
-                            project,
-                          });
-                        }}
-                        className="p-0.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                        title="Project Options (or right-click)"
-                      >
-                        <MoreHorizontal className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-[10px] text-slate-400 font-mono group-hover:text-slate-500">
+                          {project.key}
+                        </span>
+                        {/* 3-dots trigger button on hover */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setContextMenu({
+                              x: Math.min(rect.right - 140, window.innerWidth - 190),
+                              y: Math.min(rect.bottom + 4, window.innerHeight - 100),
+                              project,
+                            });
+                          }}
+                          className="p-0.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Project Options (or right-click)"
+                        >
+                          <MoreHorizontal className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

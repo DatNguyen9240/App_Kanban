@@ -8,8 +8,8 @@ interface CalendarViewProps {
 }
 
 export const CalendarView: React.FC<CalendarViewProps> = ({ board, onSelectCard }) => {
-  const allCards = board.columns.flatMap((col) =>
-    col.cards.map((c) => ({ ...c, columnColor: col.color, columnName: col.name }))
+  const allCards = (board?.columns || []).flatMap((col) =>
+    (col.cards || []).map((c) => ({ ...c, columnColor: col.color, columnName: col.name }))
   );
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];

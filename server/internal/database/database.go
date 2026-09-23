@@ -72,6 +72,42 @@ func SeedInitialData(db *gorm.DB) {
 				}
 			}
 		}
+		// Ensure there is at least one active project in the workspace
+		var projCount int64
+		db.Model(&models.Project{}).Where("deleted_at IS NULL").Count(&projCount)
+		if projCount == 0 {
+			var ws models.Workspace
+			if err := db.First(&ws).Error; err == nil {
+				project := models.Project{
+					WorkspaceID: ws.ID,
+					Name:        "Main Project",
+					Key:         "KAN",
+					Description: "Default project",
+					Icon:        "FolderGit2",
+					Color:       "#6366F1",
+				}
+				db.Create(&project)
+
+				board := models.Board{
+					ProjectID:          project.ID,
+					Name:               "Sprint Board",
+					BackgroundGradient: "from-slate-50 to-slate-100",
+				}
+				db.Create(&board)
+
+				cols := []models.Column{
+					{BoardID: board.ID, Name: "Backlog", Color: "#94A3B8", Position: 1000},
+					{BoardID: board.ID, Name: "Todo", Color: "#3B82F6", Position: 2000},
+					{BoardID: board.ID, Name: "In Progress", Color: "#F59E0B", Position: 3000},
+					{BoardID: board.ID, Name: "In Review", Color: "#8B5CF6", Position: 4000},
+					{BoardID: board.ID, Name: "Done", Color: "#10B981", Position: 5000},
+				}
+				for _, col := range cols {
+					db.Create(&col)
+				}
+			}
+		}
+
 		return // Data already exists
 	}
 
