@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Card, Column, Priority } from '../../types/kanban';
 import { ConfirmModal } from '../common/ConfirmModal';
+import { DatePicker } from '../common/DatePicker';
 
 interface CardDetailModalProps {
   card: Card | null;
@@ -169,30 +170,32 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
             {/* Due Date */}
             <div>
               <span className="text-slate-400 block mb-1 font-medium">Due Date</span>
-              <input
-                type="date"
-                value={card.due_date ? card.due_date.split('T')[0] : ''}
-                onChange={(e) => onUpdate(card.id, { due_date: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
-                className="w-full bg-white border border-slate-200 rounded-md p-1 text-slate-700 font-medium focus:outline-none"
+              <DatePicker
+                value={card.due_date}
+                onChange={(newDate) => onUpdate(card.id, { due_date: newDate })}
               />
             </div>
 
             {/* Assignee */}
             <div>
               <span className="text-slate-400 block mb-1 font-medium">Assignee</span>
-              <div className="flex items-center gap-1.5 pt-1">
+              <div className="flex items-center gap-1.5 pt-0.5">
                 {card.assignees && card.assignees.length > 0 ? (
                   card.assignees.map((u) => (
-                    <img
+                    <div
                       key={u.id}
-                      src={u.avatar_url}
-                      alt={u.full_name}
-                      title={u.full_name}
-                      className="w-6 h-6 rounded-full border border-slate-200"
-                    />
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium"
+                    >
+                      <img
+                        src={u.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin'}
+                        alt={u.full_name}
+                        className="w-4 h-4 rounded-full"
+                      />
+                      <span className="truncate max-w-[100px]">{u.full_name}</span>
+                    </div>
                   ))
                 ) : (
-                  <span className="text-slate-400">Unassigned</span>
+                  <span className="text-slate-400 text-xs italic">Unassigned</span>
                 )}
               </div>
             </div>
