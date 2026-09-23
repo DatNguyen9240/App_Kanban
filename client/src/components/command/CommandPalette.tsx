@@ -59,6 +59,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       },
     },
     {
+      id: 'view_my_issues',
+      title: 'Go to My Issues',
+      icon: CheckSquare,
+      color: 'text-indigo-600',
+      action: () => {
+        onSelectView('my-issues');
+        onClose();
+      },
+    },
+    {
       id: 'view_board',
       title: 'Switch to Kanban Board',
       icon: Layers,

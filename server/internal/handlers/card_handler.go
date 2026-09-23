@@ -72,6 +72,11 @@ func (h *CardHandler) CreateCard(c *gin.Context) {
 		CreatorID:     userIDStr,
 	}
 
+	var defaultUser models.User
+	if err := h.db.First(&defaultUser).Error; err == nil {
+		card.Assignees = []models.User{defaultUser}
+	}
+
 	if err := h.db.Create(&card).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

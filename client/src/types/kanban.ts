@@ -107,5 +107,5 @@ export interface Workspace {
   projects?: Project[];
 }
 
-export type ViewMode = 'board' | 'list' | 'calendar' | 'timeline';
+export type ViewMode = 'board' | 'list' | 'calendar' | 'timeline' | 'my-issues';
 export type CardDensity = 'compact' | 'comfortable' | 'spacious';

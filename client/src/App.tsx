@@ -5,6 +5,7 @@ import { Board } from './components/kanban/Board';
 import { ListView } from './components/views/ListView';
 import { CalendarView } from './components/views/CalendarView';
 import { TimelineView } from './components/views/TimelineView';
+import { MyIssuesView } from './components/views/MyIssuesView';
 import { CardDetailModal } from './components/kanban/CardDetailModal';
 import { NewCardModal } from './components/kanban/NewCardModal';
 import { NewProjectModal } from './components/kanban/NewProjectModal';
@@ -33,7 +34,6 @@ export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewMode>('board');
   const [density, setDensity] = useState<CardDensity>('comfortable');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isMyIssues, setIsMyIssues] = useState(false);
 
   // Modals
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -367,7 +367,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Filtered board according to search query & My Issues
+  // Filtered board according to search query
   const filteredBoard: BoardType | null = currentBoard
     ? {
         ...currentBoard,
@@ -379,8 +379,7 @@ export const App: React.FC = () => {
               c.issue_key.toLowerCase().includes(searchQuery.toLowerCase()) ||
               c.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-            const matchesMyIssues = !isMyIssues || (c.assignees && c.assignees.length > 0);
-            return matchesQuery && matchesMyIssues;
+            return matchesQuery;
           }),
         })),
       }
@@ -408,8 +407,6 @@ export const App: React.FC = () => {
         onSelectView={(v) => setCurrentView(v)}
         onOpenCommand={() => setIsCommandOpen(true)}
         onNewProject={() => setIsNewProjectOpen(true)}
-        isMyIssues={isMyIssues}
-        onToggleMyIssues={() => setIsMyIssues(!isMyIssues)}
         onOpenInbox={() => setIsInboxOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onDeleteProject={handleDeleteProject}
@@ -423,6 +420,7 @@ export const App: React.FC = () => {
         <Header
           project={currentProject}
           board={currentBoard}
+          currentView={currentView}
           onOpenNewCard={() => setIsNewCardOpen(true)}
           onOpenCommand={() => setIsCommandOpen(true)}
           searchQuery={searchQuery}
@@ -445,6 +443,16 @@ export const App: React.FC = () => {
               onAddColumn={handleAddColumn}
               onDeleteColumn={handleDeleteColumn}
               onUpdateColumn={handleUpdateColumn}
+            />
+          )}
+
+          {currentView === 'my-issues' && (
+            <MyIssuesView
+              board={currentBoard}
+              searchQuery={searchQuery}
+              onSelectCard={setSelectedCard}
+              onDeleteCard={handleDeleteCard}
+              onNewIssue={() => setIsNewCardOpen(true)}
             />
           )}
 

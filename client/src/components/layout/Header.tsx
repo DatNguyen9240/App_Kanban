@@ -8,11 +8,12 @@ import {
   Grid,
   Menu,
 } from 'lucide-react';
-import { Board, CardDensity, Project } from '../../types/kanban';
+import { Board, CardDensity, Project, ViewMode } from '../../types/kanban';
 
 interface HeaderProps {
   project: Project | null;
   board: Board | null;
+  currentView?: ViewMode;
   onOpenNewCard: () => void;
   onOpenCommand: () => void;
   searchQuery: string;
@@ -26,6 +27,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   project,
   board,
+  currentView,
   onOpenNewCard,
   onOpenCommand,
   searchQuery,
@@ -53,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
         <span className="hidden sm:inline font-semibold text-slate-800">{project?.name || 'Project'}</span>
         <span className="hidden sm:inline text-slate-300">/</span>
         <span className="text-slate-800 font-semibold truncate max-w-[120px] sm:max-w-xs">
-          {board?.name || 'Sprint Board'}
+          {currentView === 'my-issues' ? 'My Issues' : (board?.name || 'Sprint Board')}
         </span>
       </div>
 

@@ -24,8 +24,8 @@ interface SidebarProps {
   onSelectView: (view: ViewMode) => void;
   onOpenCommand: () => void;
   onNewProject: () => void;
-  isMyIssues: boolean;
-  onToggleMyIssues: () => void;
+  isMyIssues?: boolean;
+  onToggleMyIssues?: () => void;
   onOpenInbox: () => void;
   onOpenSettings: () => void;
   onDeleteProject?: (projectId: string) => void;
@@ -134,17 +134,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
             <button
               onClick={() => {
-                onToggleMyIssues();
+                onSelectView('my-issues');
                 onClose?.();
               }}
               className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors group ${
-                isMyIssues
+                currentView === 'my-issues'
                   ? 'bg-indigo-50 text-indigo-700 font-semibold'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <CheckSquare className={`w-4 h-4 ${isMyIssues ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} />
+                <CheckSquare className={`w-4 h-4 ${currentView === 'my-issues' ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} />
                 <span>My Issues</span>
               </div>
             </button>

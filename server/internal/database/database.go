@@ -62,6 +62,16 @@ func SeedInitialData(db *gorm.DB) {
 	var count int64
 	db.Model(&models.Workspace{}).Count(&count)
 	if count > 0 {
+		var adminUser models.User
+		if err := db.First(&adminUser).Error; err == nil {
+			var cards []models.Card
+			db.Preload("Assignees").Find(&cards)
+			for _, c := range cards {
+				if len(c.Assignees) == 0 {
+					_ = db.Model(&c).Association("Assignees").Append(&adminUser)
+				}
+			}
+		}
 		return // Data already exists
 	}
 
