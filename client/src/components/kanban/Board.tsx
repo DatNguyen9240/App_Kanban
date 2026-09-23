@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Board as BoardType, Card as CardType, CardDensity } from '../../types/kanban';
@@ -34,6 +34,127 @@ export const Board: React.FC<BoardProps> = ({
   const [colName, setColName] = useState('');
   const boardContainerRef = useRef<HTMLDivElement>(null);
 
+  // Edge auto-scrolling state & refs
+  const isDraggingRef = useRef(false);
+  const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const animFrameIdRef = useRef<number | null>(null);
+
+  const stopAutoScroll = useCallback(() => {
+    isDraggingRef.current = false;
+    if (animFrameIdRef.current) {
+      cancelAnimationFrame(animFrameIdRef.current);
+      animFrameIdRef.current = null;
+    }
+  }, []);
+
+  const startAutoScroll = useCallback(() => {
+    const loop = () => {
+      if (!isDraggingRef.current) return;
+
+      const container = boardContainerRef.current;
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const { x: mouseX, y: mouseY } = mousePosRef.current;
+
+        // --- 1. HORIZONTAL AUTO-SCROLL (Board canvas edges) ---
+        const hThreshold = 140; // 140px edge zone for easy, natural trigger
+        const maxHSpeed = 26;   // Max speed px/frame
+
+        // Near Left edge
+        if (mouseX > rect.left - 40 && mouseX < rect.left + hThreshold) {
+          const ratio = Math.max(0, Math.min(1, (rect.left + hThreshold - mouseX) / hThreshold));
+          const speed = Math.round(ratio * (maxHSpeed - 4) + 4);
+          container.scrollLeft -= speed;
+        }
+        // Near Right edge
+        else if (mouseX < rect.right + 40 && mouseX > rect.right - hThreshold) {
+          const ratio = Math.max(0, Math.min(1, (mouseX - (rect.right - hThreshold)) / hThreshold));
+          const speed = Math.round(ratio * (maxHSpeed - 4) + 4);
+          container.scrollLeft += speed;
+        }
+
+        // --- 2. VERTICAL AUTO-SCROLL (Inside individual columns) ---
+        if (typeof document.elementsFromPoint === 'function') {
+          const elementsUnderCursor = document.elementsFromPoint(mouseX, mouseY);
+          for (const el of elementsUnderCursor) {
+            if (
+              el instanceof HTMLElement &&
+              el.scrollHeight > el.clientHeight &&
+              el.classList.contains('overflow-y-auto')
+            ) {
+              const colRect = el.getBoundingClientRect();
+              const vThreshold = 90;
+              const maxVSpeed = 20;
+
+              if (mouseY > colRect.top - 20 && mouseY < colRect.top + vThreshold) {
+                const ratio = Math.max(0, Math.min(1, (colRect.top + vThreshold - mouseY) / vThreshold));
+                const speed = Math.round(ratio * (maxVSpeed - 3) + 3);
+                el.scrollTop -= speed;
+              } else if (mouseY < colRect.bottom + 20 && mouseY > colRect.bottom - vThreshold) {
+                const ratio = Math.max(0, Math.min(1, (mouseY - (colRect.bottom - vThreshold)) / vThreshold));
+                const speed = Math.round(ratio * (maxVSpeed - 3) + 3);
+                el.scrollTop += speed;
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      animFrameIdRef.current = requestAnimationFrame(loop);
+    };
+
+    if (!animFrameIdRef.current) {
+      animFrameIdRef.current = requestAnimationFrame(loop);
+    }
+  }, []);
+
+  // Track global pointer position and clean up on pointer release
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseUp = () => {
+      if (isDraggingRef.current) {
+        stopAutoScroll();
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseup', handleMouseUp, { passive: true });
+
+    return () => {
+      stopAutoScroll();
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [stopAutoScroll]);
+
+  // Horizontal scrolling with mouse wheel over canvas
+  useEffect(() => {
+    const container = boardContainerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      const target = e.target as HTMLElement | null;
+      const scrollableCol = target?.closest('.overflow-y-auto');
+      if (scrollableCol && scrollableCol.scrollHeight > scrollableCol.clientHeight && !e.shiftKey) {
+        return; // Allow column vertical scroll
+      }
+
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        container.scrollLeft += e.deltaY;
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, []);
+
   const scrollBoard = (direction: 'left' | 'right') => {
     if (boardContainerRef.current) {
       const scrollAmount = direction === 'left' ? -350 : 350;
@@ -41,7 +162,13 @@ export const Board: React.FC<BoardProps> = ({
     }
   };
 
+  const handleDragStart = () => {
+    isDraggingRef.current = true;
+    startAutoScroll();
+  };
+
   const handleDragEnd = (result: DropResult) => {
+    stopAutoScroll();
     const { destination, source, draggableId } = result;
 
     if (!destination) return;
@@ -86,7 +213,7 @@ export const Board: React.FC<BoardProps> = ({
         ref={boardContainerRef}
         className="flex-1 overflow-x-auto overflow-y-hidden p-6"
       >
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <div className="flex items-start gap-4 h-full">
             {board.columns.map((column) => (
               <Column
