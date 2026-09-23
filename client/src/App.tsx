@@ -41,6 +41,7 @@ export const App: React.FC = () => {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isInboxOpen, setIsInboxOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // 1. Initial Load
   const loadData = async () => {
@@ -372,10 +373,12 @@ export const App: React.FC = () => {
         onToggleMyIssues={() => setIsMyIssues(!isMyIssues)}
         onOpenInbox={() => setIsInboxOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
       {/* Main Workspace Area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
+      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Top Header */}
         <Header
           project={currentProject}
@@ -386,6 +389,7 @@ export const App: React.FC = () => {
           onSearchChange={setSearchQuery}
           density={density}
           onDensityChange={setDensity}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
 
         {/* View Content */}

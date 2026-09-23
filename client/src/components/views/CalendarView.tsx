@@ -27,9 +27,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ board, onSelectCard 
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden p-6">
+    <div className="flex-1 flex flex-col overflow-hidden p-3 sm:p-6">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-2">
           <CalIcon className="w-4 h-4 text-indigo-600" />
           <h2 className="text-sm font-bold text-slate-800">{currentMonth}</h2>
@@ -45,65 +45,63 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ board, onSelectCard 
       </div>
 
       {/* Calendar Grid */}
-      <div className="flex-1 bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col">
-        {/* Days of week */}
-        <div className="grid grid-cols-7 border-b border-slate-200 text-center text-xs font-semibold text-slate-500 py-2.5 bg-slate-50/80">
-          {daysOfWeek.map((day) => (
-            <div key={day}>{day}</div>
-          ))}
-        </div>
+      <div className="flex-1 bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-x-auto overflow-y-hidden flex flex-col">
+        <div className="min-w-[620px] flex-1 flex flex-col">
+          {/* Days of week */}
+          <div className="grid grid-cols-7 border-b border-slate-200 text-center text-xs font-semibold text-slate-500 py-2.5 bg-slate-50/80 shrink-0">
+            {daysOfWeek.map((day) => (
+              <div key={day}>{day}</div>
+            ))}
+          </div>
 
-        {/* Days cells */}
-        <div className="flex-1 grid grid-cols-7 auto-rows-fr divide-x divide-y divide-slate-100 overflow-y-auto">
-          {daysInMonth.map((day) => {
-            const cards = getCardsForDay(day);
-            const isToday = day === 23; // current mock date
-            return (
-              <div
-                key={day}
-                className={`p-2 min-h-[90px] flex flex-col transition-colors ${
-                  isToday ? 'bg-indigo-50/20' : 'hover:bg-slate-50/50'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span
-                    className={`text-xs font-semibold ${
-                      isToday
-                        ? 'w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px]'
-                        : 'text-slate-600'
-                    }`}
-                  >
-                    {day}
-                  </span>
-                  {cards.length > 0 && (
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      {cards.length}
-                    </span>
-                  )}
-                </div>
+          {/* Days cells */}
+          <div className="flex-1 grid grid-cols-7 auto-rows-fr divide-x divide-y divide-slate-100 overflow-y-auto">
+            {daysInMonth.map((day) => {
+              const cards = getCardsForDay(day);
+              const isToday = day === 23; // current date
 
-                {/* Cards scheduled for this day */}
-                <div className="space-y-1 overflow-y-auto flex-1">
-                  {cards.map((card) => (
-                    <div
-                      key={card.id}
-                      onClick={() => onSelectCard(card)}
-                      className="p-1.5 bg-white rounded-md border border-slate-200 shadow-xs hover:shadow-sm cursor-pointer transition-all hover:border-indigo-300 text-[10px]"
+              return (
+                <div
+                  key={day}
+                  className={`p-1.5 min-h-[75px] sm:min-h-[90px] flex flex-col gap-1 transition-colors ${
+                    isToday ? 'bg-indigo-50/20' : 'hover:bg-slate-50/50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-[11px] font-semibold flex items-center justify-center w-5 h-5 rounded-full ${
+                        isToday
+                          ? 'bg-indigo-600 text-white font-bold shadow-xs'
+                          : 'text-slate-600'
+                      }`}
                     >
-                      <div className="flex items-center gap-1 mb-0.5">
+                      {day}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1 overflow-y-auto max-h-16">
+                    {cards.map((card) => (
+                      <div
+                        key={card.id}
+                        onClick={() => onSelectCard(card)}
+                        className="text-[10px] p-1 rounded font-medium truncate cursor-pointer shadow-xs hover:brightness-95 flex items-center gap-1"
+                        style={{
+                          backgroundColor: `${card.columnColor}20`,
+                          color: card.columnColor,
+                        }}
+                      >
                         <span
-                          className="w-1.5 h-1.5 rounded-full"
+                          className="w-1.5 h-1.5 rounded-full shrink-0"
                           style={{ backgroundColor: card.columnColor }}
                         />
-                        <span className="font-mono font-bold text-slate-500">{card.issue_key}</span>
+                        <span className="truncate">{card.title}</span>
                       </div>
-                      <p className="font-medium text-slate-800 truncate">{card.title}</p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
