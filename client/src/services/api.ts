@@ -62,6 +62,13 @@ export const api = {
     return res.json();
   },
 
+  async deleteProject(projectId: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/projects/${projectId}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete project');
+  },
+
   async addChecklistItem(cardId: string, content: string): Promise<ChecklistItem> {
     const res = await fetch(`${API_BASE}/cards/${cardId}/checklists/items`, {
       method: 'POST',

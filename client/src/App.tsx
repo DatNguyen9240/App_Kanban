@@ -258,6 +258,16 @@ export const App: React.FC = () => {
     }
   };
 
+  // 14. Delete Project
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      await api.deleteProject(projectId);
+      await loadData();
+    } catch (err) {
+      console.error('Failed to delete project:', err);
+    }
+  };
+
   // 14. Checklist operations
   const handleToggleChecklist = async (itemId: string) => {
     try {
@@ -375,6 +385,7 @@ export const App: React.FC = () => {
         onToggleMyIssues={() => setIsMyIssues(!isMyIssues)}
         onOpenInbox={() => setIsInboxOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onDeleteProject={handleDeleteProject}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />

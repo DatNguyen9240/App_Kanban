@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Inbox,
   CheckSquare,
@@ -10,8 +10,11 @@ import {
   FolderGit2,
   Sparkles,
   X,
+  MoreHorizontal,
+  Trash2,
 } from 'lucide-react';
 import { Project, ViewMode, Workspace } from '../../types/kanban';
+import { ConfirmModal } from '../common/ConfirmModal';
 
 interface SidebarProps {
   workspace: Workspace | null;
@@ -25,6 +28,7 @@ interface SidebarProps {
   onToggleMyIssues: () => void;
   onOpenInbox: () => void;
   onOpenSettings: () => void;
+  onDeleteProject?: (projectId: string) => void;
   isOpen?: boolean;
   onClose?: () => void;
 }
@@ -41,9 +45,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleMyIssues,
   onOpenInbox,
   onOpenSettings,
+  onDeleteProject,
   isOpen = false,
   onClose,
 }) => {
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; project: Project } | null>(null);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+
+  // Close context menu on global click or Escape
+  useEffect(() => {
+    const handleClose = () => setContextMenu(null);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setContextMenu(null);
+    };
+    window.addEventListener('click', handleClose);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('click', handleClose);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -209,29 +231,58 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {workspace?.projects?.map((project) => {
                 const isActive = currentProject?.id === project.id;
                 return (
-                  <button
+                  <div
                     key={project.id}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setContextMenu({
+                        x: Math.min(e.clientX, window.innerWidth - 190),
+                        y: Math.min(e.clientY, window.innerHeight - 100),
+                        project,
+                      });
+                    }}
                     onClick={() => {
                       onSelectProject(project);
                       onClose?.();
                     }}
-                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors group ${
+                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors group cursor-pointer ${
                       isActive
                         ? 'bg-slate-100 text-slate-900 font-semibold'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 truncate">
+                    <div className="flex items-center gap-2.5 truncate flex-1 min-w-0">
                       <FolderGit2
                         className="w-4 h-4 shrink-0"
                         style={{ color: project.color || '#6366F1' }}
                       />
                       <span className="truncate">{project.name}</span>
                     </div>
-                    <span className="text-[10px] text-slate-400 font-mono group-hover:text-slate-500 shrink-0">
-                      {project.key}
-                    </span>
-                  </button>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <span className="text-[10px] text-slate-400 font-mono group-hover:text-slate-500">
+                        {project.key}
+                      </span>
+                      {/* 3-dots trigger button on hover */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          setContextMenu({
+                            x: Math.min(rect.right - 140, window.innerWidth - 190),
+                            y: Math.min(rect.bottom + 4, window.innerHeight - 100),
+                            project,
+                          });
+                        }}
+                        className="p-0.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Project Options (or right-click)"
+                      >
+                        <MoreHorizontal className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -261,6 +312,46 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </aside>
+
+      {/* Right-click Floating Context Menu */}
+      {contextMenu && (
+        <div
+          className="fixed z-50 bg-white border border-slate-200 shadow-xl rounded-xl py-1 w-44 animate-in fade-in zoom-in-95 duration-100"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="px-3 py-1.5 border-b border-slate-100 text-[11px] text-slate-400 truncate">
+            <span className="font-semibold text-slate-700">{contextMenu.project.name}</span>
+            <span className="ml-1 font-mono text-[10px]">({contextMenu.project.key})</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setProjectToDelete(contextMenu.project);
+              setContextMenu(null);
+            }}
+            className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+            <span>Delete Project</span>
+          </button>
+        </div>
+      )}
+
+      {/* Confirmation Modal for Project Deletion */}
+      <ConfirmModal
+        isOpen={!!projectToDelete}
+        title="Delete Project"
+        description={`Are you sure you want to delete project "${projectToDelete?.name} (${projectToDelete?.key})"? All boards and cards inside this project will be deleted. This action cannot be undone.`}
+        confirmText="Delete Project"
+        onConfirm={() => {
+          if (projectToDelete && onDeleteProject) {
+            onDeleteProject(projectToDelete.id);
+          }
+          setProjectToDelete(null);
+        }}
+        onClose={() => setProjectToDelete(null)}
+      />
     </>
   );
 };
