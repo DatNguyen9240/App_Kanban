@@ -219,12 +219,48 @@ export const App: React.FC = () => {
 
   // 8. Update Card
   const handleUpdateCard = async (cardId: string, data: Partial<Card>) => {
+    // Optimistically update selectedCard so UI reflects changes instantly
+    setSelectedCard((prev) => (prev && prev.id === cardId ? { ...prev, ...data } : prev));
+
+    // Optimistically update currentBoard so Board / List view reflects changes immediately
+    if (currentBoard) {
+      setCurrentBoard((prevBoard) => {
+        if (!prevBoard) return prevBoard;
+        let cardToMove: Card | null = null;
+        const newCols = prevBoard.columns.map((col) => {
+          const found = col.cards?.find((c) => c.id === cardId);
+          if (found) {
+            cardToMove = { ...found, ...data };
+            if (data.column_id && data.column_id !== col.id) {
+              return { ...col, cards: col.cards?.filter((c) => c.id !== cardId) || [] };
+            } else {
+              return {
+                ...col,
+                cards: col.cards?.map((c) => (c.id === cardId ? { ...c, ...data } : c)) || [],
+              };
+            }
+          }
+          return col;
+        });
+
+        if (data.column_id && cardToMove) {
+          const targetCol = newCols.find((col) => col.id === data.column_id);
+          if (targetCol && !targetCol.cards?.some((c) => c.id === cardId)) {
+            targetCol.cards = [...(targetCol.cards || []), cardToMove];
+          }
+        }
+
+        return { ...prevBoard, columns: newCols };
+      });
+    }
+
     try {
       const updated = await api.updateCard(cardId, data);
       setSelectedCard(updated);
       refreshBoard();
     } catch (err) {
       console.error('Failed to update card:', err);
+      refreshBoard();
     }
   };
 

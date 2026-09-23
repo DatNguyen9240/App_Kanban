@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Board, Card } from '../../types/kanban';
+import { Board, Card, Priority } from '../../types/kanban';
 import {
   Calendar,
   Trash2,
@@ -9,12 +9,9 @@ import {
   ChevronRight,
   ChevronDown,
   X,
-  AlertCircle,
-  ArrowUp,
-  ArrowDown,
-  Minus,
 } from 'lucide-react';
 import { ConfirmModal } from '../common/ConfirmModal';
+import { Select, PRIORITY_OPTIONS, SelectOption } from '../common/Select';
 
 interface ListViewProps {
   board: Board;
@@ -57,6 +54,12 @@ export const ListView: React.FC<ListViewProps> = ({
       const name = c.name.toLowerCase();
       return name.includes('todo') || name.includes('backlog') || name.includes('ready');
     }) || board?.columns?.[0];
+
+  const columnOptions: SelectOption<string>[] = (board?.columns || []).map((col) => ({
+    value: col.id,
+    label: col.name,
+    color: col.color || '#6366f1',
+  }));
 
   const isCardDone = (card: Card & { columnName?: string }) => {
     if (card.column_id === doneCol?.id) return true;
@@ -126,47 +129,6 @@ export const ListView: React.FC<ListViewProps> = ({
     }
     setSelectedCardIds(new Set());
     setShowBatchDeleteModal(false);
-  };
-
-  // Priority icon helper
-  const renderPriority = (priority: string) => {
-    switch (priority) {
-      case 'urgent':
-        return (
-          <span className="inline-flex items-center gap-1 text-rose-600 font-semibold capitalize">
-            <AlertCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
-            Urgent
-          </span>
-        );
-      case 'high':
-        return (
-          <span className="inline-flex items-center gap-1 text-amber-600 font-semibold capitalize">
-            <ArrowUp className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            High
-          </span>
-        );
-      case 'medium':
-        return (
-          <span className="inline-flex items-center gap-1 text-yellow-600 font-semibold capitalize">
-            <Minus className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
-            Medium
-          </span>
-        );
-      case 'low':
-        return (
-          <span className="inline-flex items-center gap-1 text-blue-600 font-semibold capitalize">
-            <ArrowDown className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-            Low
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 text-slate-400 capitalize">
-            <Circle className="w-3 h-3 text-slate-300 shrink-0" />
-            None
-          </span>
-        );
-    }
   };
 
   return (
@@ -311,26 +273,38 @@ export const ListView: React.FC<ListViewProps> = ({
                           </div>
                         </td>
 
-                        {/* 5. Status Column Pill */}
-                        <td className="py-3 px-4 whitespace-nowrap">
-                          <span
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold"
-                            style={{
-                              backgroundColor: `${card.columnColor}15`,
-                              color: card.columnColor,
+                        {/* 5. Status Column Selector */}
+                        <td
+                          className="py-2 px-3 whitespace-nowrap min-w-[130px]"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Select
+                            value={card.column_id}
+                            onChange={(newColId) => {
+                              if (onUpdateCard) {
+                                onUpdateCard(card.id, { column_id: newColId });
+                              }
                             }}
-                          >
-                            <span
-                              className="w-1.5 h-1.5 rounded-full"
-                              style={{ backgroundColor: card.columnColor }}
-                            />
-                            {card.columnName}
-                          </span>
+                            options={columnOptions}
+                            buttonClassName="py-1 px-2.5 text-[11px] rounded-lg border-slate-200/80 bg-slate-50/50 hover:bg-white"
+                          />
                         </td>
 
-                        {/* 6. Priority */}
-                        <td className="py-3 px-4 whitespace-nowrap">
-                          {renderPriority(card.priority)}
+                        {/* 6. Priority Column Selector */}
+                        <td
+                          className="py-2 px-3 whitespace-nowrap min-w-[120px]"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Select
+                            value={card.priority}
+                            onChange={(newPriority) => {
+                              if (onUpdateCard) {
+                                onUpdateCard(card.id, { priority: newPriority as Priority });
+                              }
+                            }}
+                            options={PRIORITY_OPTIONS}
+                            buttonClassName="py-1 px-2.5 text-[11px] rounded-lg border-slate-200/80 bg-slate-50/50 hover:bg-white"
+                          />
                         </td>
 
                         {/* 7. Assignee */}

@@ -248,11 +248,12 @@ func TestCardCRUDAndFractionalIndexing(t *testing.T) {
 	_ = json.Unmarshal(w.Body.Bytes(), &movedCard)
 	assert.Equal(t, col2ID, movedCard.ColumnID)
 
-	// 3. Update Card Title & Priority
+	// 3. Update Card Title, Priority & ColumnID (Status)
 	newTitle := "Updated: Write comprehensive unit test suite"
 	updatePayload := map[string]string{
-		"title":    newTitle,
-		"priority": "urgent",
+		"title":     newTitle,
+		"priority":  "urgent",
+		"column_id": col1ID,
 	}
 	body, _ = json.Marshal(updatePayload)
 	req, _ = http.NewRequest("PATCH", "/api/v1/cards/"+createdCard.ID, bytes.NewBuffer(body))
@@ -265,6 +266,7 @@ func TestCardCRUDAndFractionalIndexing(t *testing.T) {
 	_ = json.Unmarshal(w.Body.Bytes(), &updatedCard)
 	assert.Equal(t, newTitle, updatedCard.Title)
 	assert.Equal(t, "urgent", updatedCard.Priority)
+	assert.Equal(t, col1ID, updatedCard.ColumnID)
 
 	// 4. Add Comment
 	commentPayload := map[string]string{

@@ -167,6 +167,7 @@ func (h *CardHandler) MoveCard(c *gin.Context) {
 type UpdateCardRequest struct {
 	Title         *string    `json:"title"`
 	Description   *string    `json:"description"`
+	ColumnID      *string    `json:"column_id"`
 	Priority      *string    `json:"priority"`
 	DueDate       *time.Time `json:"due_date"`
 	CoverImageURL *string    `json:"cover_image_url"`
@@ -202,6 +203,24 @@ func (h *CardHandler) UpdateCard(c *gin.Context) {
 		card.CoverImageURL = *req.CoverImageURL
 	}
 
+	var columnChanged bool
+	var oldColumnID string
+	if req.ColumnID != nil && *req.ColumnID != "" && *req.ColumnID != card.ColumnID {
+		oldColumnID = card.ColumnID
+		var targetCol models.Column
+		if err := h.db.First(&targetCol, "id = ? AND board_id = ?", *req.ColumnID, card.BoardID).Error; err == nil {
+			card.ColumnID = *req.ColumnID
+			columnChanged = true
+
+			var lastCard models.Card
+			if err := h.db.Where("column_id = ?", *req.ColumnID).Order("position desc").First(&lastCard).Error; err == nil {
+				card.Position = lastCard.Position + 1000.0
+			} else {
+				card.Position = 1000.0
+			}
+		}
+	}
+
 	if err := h.db.Save(&card).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -209,6 +228,20 @@ func (h *CardHandler) UpdateCard(c *gin.Context) {
 
 	userID, _ := c.Get("userID")
 	userIDStr, _ := userID.(string)
+
+	if columnChanged {
+		h.hub.Broadcast(&websocket.WSEvent{
+			Event:    "CARD_MOVED",
+			BoardID:  card.BoardID,
+			SenderID: userIDStr,
+			Payload: gin.H{
+				"card_id":          card.ID,
+				"source_column_id": oldColumnID,
+				"target_column_id": card.ColumnID,
+				"new_position":     card.Position,
+			},
+		})
+	}
 
 	h.hub.Broadcast(&websocket.WSEvent{
 		Event:    "CARD_UPDATED",
