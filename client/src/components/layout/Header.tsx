@@ -6,7 +6,7 @@ import {
   AlignJustify,
   Maximize2,
   Grid,
-  Menu,
+  PanelLeft,
 } from 'lucide-react';
 import { Board, CardDensity, Project, ViewMode } from '../../types/kanban';
 
@@ -39,15 +39,15 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="h-14 border-b border-slate-200 bg-white/80 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between shrink-0 z-10 gap-2">
-      {/* Left: Hamburger (mobile) + Breadcrumbs */}
+      {/* Left: Sidebar Toggle + Breadcrumbs */}
       <div className="flex items-center gap-1.5 sm:gap-2 text-xs overflow-hidden shrink-0">
         <button
           type="button"
           onClick={onToggleSidebar}
-          className="md:hidden p-1.5 -ml-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors shrink-0"
-          title="Toggle Navigation Menu"
+          className="p-1.5 -ml-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors shrink-0"
+          title="Đóng / Mở menu thanh bên"
         >
-          <Menu className="w-4 h-4" />
+          <PanelLeft className="w-4 h-4" />
         </button>
 
         <span className="hidden sm:inline text-slate-400 font-medium">Projects</span>
@@ -89,34 +89,40 @@ export const Header: React.FC<HeaderProps> = ({
           <span>K</span>
         </button>
 
-        {/* Card Density Toggle (PLANKA style) */}
-        <div className="hidden sm:flex items-center bg-slate-100 p-0.5 rounded-md border border-slate-200 text-slate-600">
+        {/* Card Density Toggle / Zoom View */}
+        <div className="flex items-center bg-slate-100/90 p-0.5 rounded-lg border border-slate-200 text-slate-600">
           <button
+            type="button"
             onClick={() => onDensityChange('compact')}
-            title="Compact View"
-            className={`p-1 rounded text-xs transition-colors ${
+            title="Thu nhỏ - Nhìn rộng toàn cảnh (Overview)"
+            className={`px-1.5 sm:px-2 py-1 rounded-md text-xs flex items-center gap-1 transition-all ${
               density === 'compact' ? 'bg-white text-indigo-600 shadow-xs font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <AlignJustify className="w-3.5 h-3.5" />
+            <span className="hidden md:inline text-[11px]">Thu nhỏ</span>
           </button>
           <button
+            type="button"
             onClick={() => onDensityChange('comfortable')}
-            title="Comfortable View"
-            className={`p-1 rounded text-xs transition-colors ${
+            title="Chuẩn vừa vặn (Standard)"
+            className={`px-1.5 sm:px-2 py-1 rounded-md text-xs flex items-center gap-1 transition-all ${
               density === 'comfortable' ? 'bg-white text-indigo-600 shadow-xs font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <Grid className="w-3.5 h-3.5" />
+            <span className="hidden md:inline text-[11px]">Vừa</span>
           </button>
           <button
+            type="button"
             onClick={() => onDensityChange('spacious')}
-            title="Spacious View"
-            className={`p-1 rounded text-xs transition-colors ${
+            title="Lớn chi tiết (Spacious)"
+            className={`px-1.5 sm:px-2 py-1 rounded-md text-xs flex items-center gap-1 transition-all ${
               density === 'spacious' ? 'bg-white text-indigo-600 shadow-xs font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <Maximize2 className="w-3.5 h-3.5" />
+            <span className="hidden md:inline text-[11px]">Lớn</span>
           </button>
         </div>
 

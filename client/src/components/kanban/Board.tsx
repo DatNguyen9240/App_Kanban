@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, ChevronLeft, ChevronRight, AlignJustify, Grid, Maximize2 } from 'lucide-react';
 import { Board as BoardType, Card as CardType, CardDensity } from '../../types/kanban';
 import { Column } from './Column';
 
 interface BoardProps {
   board: BoardType;
   density: CardDensity;
+  onDensityChange?: (density: CardDensity) => void;
   onMoveCard: (
     cardId: string,
     targetColumnId: string,
@@ -24,6 +25,7 @@ interface BoardProps {
 export const Board: React.FC<BoardProps> = ({
   board,
   density,
+  onDensityChange,
   onMoveCard,
   onSelectCard,
   onQuickAddCard,
@@ -251,109 +253,183 @@ export const Board: React.FC<BoardProps> = ({
         ))}
       </div>
 
-      {/* Scrollable Columns Area */}
-      <div
-        ref={boardContainerRef}
-        className="flex-1 h-full overflow-x-auto overflow-y-hidden p-3 sm:p-6 select-none"
-      >
-        <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-          <div className="flex items-stretch gap-3 sm:gap-4 h-full pb-2">
-            {board.columns.map((column, colIdx) => {
-              const prevCol = colIdx > 0 ? board.columns[colIdx - 1] : undefined;
-              const nextCol = colIdx < board.columns.length - 1 ? board.columns[colIdx + 1] : undefined;
+      {/* Dynamic sizing tokens */}
+      {(() => {
+        const boardPaddingClass =
+          density === 'compact'
+            ? 'p-2 sm:p-3'
+            : density === 'comfortable'
+            ? 'p-2.5 sm:p-4'
+            : 'p-3 sm:p-6';
 
-              return (
-                <Column
-                  key={column.id}
-                  column={column}
-                  density={density}
-                  onSelectCard={onSelectCard}
-                  onQuickAddCard={onQuickAddCard}
-                  onDeleteColumn={onDeleteColumn}
-                  onUpdateColumn={onUpdateColumn}
-                  onQuickMoveCard={(cardId, targetColId) => onMoveCard(cardId, targetColId)}
-                  prevColumnId={prevCol?.id}
-                  prevColumnName={prevCol?.name}
-                  nextColumnId={nextCol?.id}
-                  nextColumnName={nextCol?.name}
-                />
-              );
-            })}
+        const boardGapClass =
+          density === 'compact'
+            ? 'gap-2 sm:gap-2.5'
+            : density === 'comfortable'
+            ? 'gap-2.5 sm:gap-3.5'
+            : 'gap-3 sm:gap-4';
 
-            {/* Add Column button */}
-            <div className="w-72 shrink-0">
-              {isAddingCol ? (
-                <form
-                  onSubmit={handleCreateColumn}
-                  className="bg-white p-3.5 rounded-2xl border border-indigo-200 shadow-md animate-in zoom-in-95 duration-100"
-                >
-                  <input
-                    type="text"
-                    autoFocus
-                    placeholder="Column name (e.g. QA)"
-                    value={colName}
-                    onChange={(e) => setColName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Escape') {
-                        setIsAddingCol(false);
-                        setColName('');
-                      }
-                    }}
-                    className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2.5 px-3 py-2 border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500"
-                  />
-                  <div className="flex items-center justify-end gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsAddingCol(false);
-                        setColName('');
-                      }}
-                      className="px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100 rounded-lg"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-3 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-xs"
-                    >
-                      Add Column
-                    </button>
+        const addColWidthClass =
+          density === 'compact'
+            ? 'w-[70vw] sm:w-56'
+            : density === 'comfortable'
+            ? 'w-[78vw] sm:w-64'
+            : 'w-[85vw] sm:w-72';
+
+        return (
+          <>
+            {/* Scrollable Columns Area */}
+            <div
+              ref={boardContainerRef}
+              className={`flex-1 h-full overflow-x-auto overflow-y-hidden ${boardPaddingClass} select-none`}
+            >
+              <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <div className={`flex items-stretch ${boardGapClass} h-full pb-2`}>
+                  {board.columns.map((column, colIdx) => {
+                    const prevCol = colIdx > 0 ? board.columns[colIdx - 1] : undefined;
+                    const nextCol = colIdx < board.columns.length - 1 ? board.columns[colIdx + 1] : undefined;
+
+                    return (
+                      <Column
+                        key={column.id}
+                        column={column}
+                        density={density}
+                        onSelectCard={onSelectCard}
+                        onQuickAddCard={onQuickAddCard}
+                        onDeleteColumn={onDeleteColumn}
+                        onUpdateColumn={onUpdateColumn}
+                        onQuickMoveCard={(cardId, targetColId) => onMoveCard(cardId, targetColId)}
+                        prevColumnId={prevCol?.id}
+                        prevColumnName={prevCol?.name}
+                        nextColumnId={nextCol?.id}
+                        nextColumnName={nextCol?.name}
+                      />
+                    );
+                  })}
+
+                  {/* Add Column button */}
+                  <div className={`${addColWidthClass} shrink-0`}>
+                    {isAddingCol ? (
+                      <form
+                        onSubmit={handleCreateColumn}
+                        className="bg-white p-3 rounded-2xl border border-indigo-200 shadow-md animate-in zoom-in-95 duration-100"
+                      >
+                        <input
+                          type="text"
+                          autoFocus
+                          placeholder="Column name (e.g. QA)"
+                          value={colName}
+                          onChange={(e) => setColName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Escape') {
+                              setIsAddingCol(false);
+                              setColName('');
+                            }
+                          }}
+                          className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2.5 px-3 py-2 border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500"
+                        />
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsAddingCol(false);
+                              setColName('');
+                            }}
+                            className="px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100 rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-3 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-xs"
+                          >
+                            Add Column
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      <button
+                        onClick={() => setIsAddingCol(true)}
+                        className="w-full h-11 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 hover:text-indigo-600 bg-slate-100/70 hover:bg-indigo-50/50 rounded-2xl border border-dashed border-slate-300/80 hover:border-indigo-300 transition-all shadow-2xs group"
+                      >
+                        <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+                        <span>Add Column</span>
+                      </button>
+                    )}
                   </div>
-                </form>
-              ) : (
-                <button
-                  onClick={() => setIsAddingCol(true)}
-                  className="w-full h-12 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 hover:text-indigo-600 bg-slate-100/70 hover:bg-indigo-50/50 rounded-2xl border border-dashed border-slate-300/80 hover:border-indigo-300 transition-all shadow-2xs group"
-                >
-                  <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
-                  <span>Add Column</span>
-                </button>
-              )}
+                </div>
+              </DragDropContext>
             </div>
-          </div>
-        </DragDropContext>
-      </div>
 
-      {/* Horizontal Scroll Quick Controls */}
-      <div className="absolute bottom-5 right-6 flex items-center gap-1.5 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-xl p-1 z-20 transition-all hover:shadow-lg">
-        <button
-          type="button"
-          onClick={() => scrollBoard('left')}
-          title="Scroll Left"
-          className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-        <span className="text-[10px] font-semibold text-slate-400 px-1 select-none">Columns</span>
-        <button
-          type="button"
-          onClick={() => scrollBoard('right')}
-          title="Scroll Right"
-          className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
+            {/* Board Floating Controls: View Zoom/Density + Scroll Navigation */}
+            <div className="absolute bottom-4 right-5 flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-2xl p-1 sm:p-1.5 z-20 transition-all hover:shadow-lg">
+              {onDensityChange && (
+                <div className="flex items-center bg-slate-100/90 rounded-xl p-0.5 border border-slate-200/60">
+                  <button
+                    type="button"
+                    onClick={() => onDensityChange('compact')}
+                    title="Thu nhỏ - Nhìn rộng toàn cảnh (Overview)"
+                    className={`px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 transition-all ${
+                      density === 'compact'
+                        ? 'bg-white text-indigo-600 shadow-xs font-semibold'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    <AlignJustify className="w-3.5 h-3.5" />
+                    <span>Thu nhỏ</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDensityChange('comfortable')}
+                    title="Chuẩn vừa vặn (Standard)"
+                    className={`px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 transition-all ${
+                      density === 'comfortable'
+                        ? 'bg-white text-indigo-600 shadow-xs font-semibold'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    <Grid className="w-3.5 h-3.5" />
+                    <span>Vừa</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDensityChange('spacious')}
+                    title="Lớn chi tiết (Spacious)"
+                    className={`px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 transition-all ${
+                      density === 'spacious'
+                        ? 'bg-white text-indigo-600 shadow-xs font-semibold'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>Lớn</span>
+                  </button>
+                </div>
+              )}
+
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => scrollBoard('left')}
+                  title="Cuộn sang trái"
+                  className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] font-semibold text-slate-400 px-1 select-none hidden sm:inline">Cột</span>
+                <button
+                  type="button"
+                  onClick={() => scrollBoard('right')}
+                  title="Cuộn sang phải"
+                  className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </>
+        );
+      })()}
     </div>
   );
 };

@@ -80,8 +80,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col h-screen select-none shrink-0 transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
+        className={`fixed md:static inset-y-0 left-0 z-40 bg-white border-r border-slate-200 flex flex-col h-screen select-none shrink-0 transition-all duration-300 ease-in-out ${
+          isOpen
+            ? 'w-64 translate-x-0 shadow-2xl md:shadow-none'
+            : '-translate-x-full md:translate-x-0 md:w-0 md:border-r-0 md:opacity-0 overflow-hidden'
         }`}
       >
         {/* Workspace Header */}

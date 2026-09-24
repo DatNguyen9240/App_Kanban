@@ -33,8 +33,15 @@ export const App: React.FC = () => {
 
   // View state
   const [currentView, setCurrentView] = useState<ViewMode>('board');
-  const [density, setDensity] = useState<CardDensity>('comfortable');
+  const [density, setDensity] = useState<CardDensity>(() => {
+    return (localStorage.getItem('kanban_density') as CardDensity) || 'compact';
+  });
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleDensityChange = (d: CardDensity) => {
+    setDensity(d);
+    localStorage.setItem('kanban_density', d);
+  };
 
   // Modals
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -43,7 +50,9 @@ export const App: React.FC = () => {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isInboxOpen, setIsInboxOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : true;
+  });
   const [isNewColumnOpen, setIsNewColumnOpen] = useState(false);
 
   // 1. Initial Load
@@ -479,7 +488,7 @@ export const App: React.FC = () => {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           density={density}
-          onDensityChange={setDensity}
+          onDensityChange={handleDensityChange}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           onOpenNewColumn={() => setIsNewColumnOpen(true)}
         />
@@ -512,6 +521,7 @@ export const App: React.FC = () => {
                 <Board
                   board={filteredBoard}
                   density={density}
+                  onDensityChange={handleDensityChange}
                   onMoveCard={handleMoveCard}
                   onSelectCard={setSelectedCard}
                   onQuickAddCard={handleQuickAddCard}
