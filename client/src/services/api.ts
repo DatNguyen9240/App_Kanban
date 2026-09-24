@@ -1,10 +1,6 @@
 import { Workspace, Board, Card, Column, Comment, Project, ChecklistItem } from '../types/kanban';
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (
-  typeof window !== 'undefined'
-    ? `${window.location.protocol}//${window.location.hostname}:8080/api/v1`
-    : '/api/v1'
-);
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || '/api/v1';
 
 export const api = {
   async getWorkspaces(): Promise<Workspace[]> {
