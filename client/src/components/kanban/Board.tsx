@@ -231,7 +231,7 @@ export const Board: React.FC<BoardProps> = ({
   return (
     <div className="relative flex-1 flex flex-col overflow-hidden min-h-0 h-full">
       {/* Mobile Column Navigation Pills */}
-      <div className="flex sm:hidden items-center gap-1.5 px-3 py-2 bg-slate-50/90 backdrop-blur-md border-b border-slate-200/80 overflow-x-auto shrink-0 select-none">
+      <div className="flex sm:hidden items-center gap-1.5 px-3 py-2 bg-slate-50/90 dark:bg-[#0D1424]/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 overflow-x-auto shrink-0 select-none">
         {board.columns.map((col) => (
           <button
             key={col.id}
@@ -242,11 +242,11 @@ export const Board: React.FC<BoardProps> = ({
                 colEl?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
               }
             }}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap bg-white border border-slate-200 text-slate-700 hover:border-indigo-300 hover:text-indigo-600 transition-colors shrink-0 shadow-2xs"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shrink-0 shadow-2xs"
           >
             <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: col.color || '#94a3b8' }} />
             <span>{col.name}</span>
-            <span className="text-[10px] text-slate-400 bg-slate-100 px-1 rounded-full font-mono">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1 rounded-full font-mono">
               {col.cards?.length || 0}
             </span>
           </button>
@@ -312,7 +312,7 @@ export const Board: React.FC<BoardProps> = ({
                     {isAddingCol ? (
                       <form
                         onSubmit={handleCreateColumn}
-                        className="bg-white p-3 rounded-2xl border border-indigo-200 shadow-md animate-in zoom-in-95 duration-100"
+                        className="bg-white dark:bg-[#161F30] p-3 rounded-2xl border border-indigo-200 dark:border-indigo-500/60 shadow-md animate-in zoom-in-95 duration-100"
                       >
                         <input
                           type="text"
@@ -326,7 +326,7 @@ export const Board: React.FC<BoardProps> = ({
                               setColName('');
                             }
                           }}
-                          className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2.5 px-3 py-2 border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500"
+                          className="w-full text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none mb-2.5 px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl focus:ring-1 focus:ring-indigo-500"
                         />
                         <div className="flex items-center justify-end gap-1.5">
                           <button
@@ -335,7 +335,7 @@ export const Board: React.FC<BoardProps> = ({
                               setIsAddingCol(false);
                               setColName('');
                             }}
-                            className="px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-100 rounded-lg"
+                            className="px-2.5 py-1.5 text-xs text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
                           >
                             Cancel
                           </button>
@@ -350,9 +350,9 @@ export const Board: React.FC<BoardProps> = ({
                     ) : (
                       <button
                         onClick={() => setIsAddingCol(true)}
-                        className="w-full h-11 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 hover:text-indigo-600 bg-slate-100/70 hover:bg-indigo-50/50 rounded-2xl border border-dashed border-slate-300/80 hover:border-indigo-300 transition-all shadow-2xs group"
+                        className="w-full h-11 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 bg-slate-100/70 dark:bg-slate-900/60 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 rounded-2xl border border-dashed border-slate-300/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all shadow-2xs group"
                       >
-                        <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+                        <Plus className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400" />
                         <span>Add Column</span>
                       </button>
                     )}
@@ -362,17 +362,17 @@ export const Board: React.FC<BoardProps> = ({
             </div>
 
             {/* Board Floating Controls: View Zoom/Density + Scroll Navigation */}
-            <div className="absolute bottom-4 right-5 flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-2xl p-1 sm:p-1.5 z-20 transition-all hover:shadow-lg">
+            <div className="absolute bottom-4 right-5 flex items-center gap-1.5 sm:gap-2 bg-white/95 dark:bg-[#0D1424]/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-2xl rounded-2xl p-1 sm:p-1.5 z-20 transition-all hover:shadow-lg">
               {onDensityChange && (
-                <div className="flex items-center bg-slate-100/90 rounded-xl p-0.5 border border-slate-200/60">
+                <div className="flex items-center bg-slate-100/90 dark:bg-slate-900/80 rounded-xl p-0.5 border border-slate-200/60 dark:border-slate-800">
                   <button
                     type="button"
                     onClick={() => onDensityChange('compact')}
                     title="Thu nhỏ - Nhìn rộng toàn cảnh (Overview)"
                     className={`px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 transition-all ${
                       density === 'compact'
-                        ? 'bg-white text-indigo-600 shadow-xs font-semibold'
-                        : 'text-slate-500 hover:text-slate-900'
+                        ? 'bg-white dark:bg-[#1E293B] text-indigo-600 dark:text-indigo-400 shadow-xs font-semibold'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                     }`}
                   >
                     <AlignJustify className="w-3.5 h-3.5" />
@@ -384,8 +384,8 @@ export const Board: React.FC<BoardProps> = ({
                     title="Chuẩn vừa vặn (Standard)"
                     className={`px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 transition-all ${
                       density === 'comfortable'
-                        ? 'bg-white text-indigo-600 shadow-xs font-semibold'
-                        : 'text-slate-500 hover:text-slate-900'
+                        ? 'bg-white dark:bg-[#1E293B] text-indigo-600 dark:text-indigo-400 shadow-xs font-semibold'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                     }`}
                   >
                     <Grid className="w-3.5 h-3.5" />
@@ -397,8 +397,8 @@ export const Board: React.FC<BoardProps> = ({
                     title="Lớn chi tiết (Spacious)"
                     className={`px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 transition-all ${
                       density === 'spacious'
-                        ? 'bg-white text-indigo-600 shadow-xs font-semibold'
-                        : 'text-slate-500 hover:text-slate-900'
+                        ? 'bg-white dark:bg-[#1E293B] text-indigo-600 dark:text-indigo-400 shadow-xs font-semibold'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                     }`}
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
@@ -412,16 +412,16 @@ export const Board: React.FC<BoardProps> = ({
                   type="button"
                   onClick={() => scrollBoard('left')}
                   title="Cuộn sang trái"
-                  className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <span className="text-[10px] font-semibold text-slate-400 px-1 select-none hidden sm:inline">Cột</span>
+                <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 px-1 select-none hidden sm:inline">Cột</span>
                 <button
                   type="button"
                   onClick={() => scrollBoard('right')}
                   title="Cuộn sang phải"
-                  className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>

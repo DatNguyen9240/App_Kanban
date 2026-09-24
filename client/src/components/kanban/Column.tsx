@@ -94,13 +94,13 @@ export const Column: React.FC<ColumnProps> = ({
 
   const colTitleClass =
     density === 'compact'
-      ? 'text-[11px] font-bold text-slate-800 uppercase tracking-wider truncate cursor-pointer hover:text-indigo-600 transition-colors'
-      : 'text-xs font-bold text-slate-800 uppercase tracking-wider truncate cursor-pointer hover:text-indigo-600 transition-colors';
+      ? 'text-[11px] font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors'
+      : 'text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors';
 
   return (
     <div
       data-column-id={column.id}
-      className={`${colWidthClass} ${colPaddingClass} bg-slate-100/80 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col shrink-0 h-full max-h-full transition-all`}
+      className={`${colWidthClass} ${colPaddingClass} bg-slate-100/80 dark:bg-[#111927]/90 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col shrink-0 h-full max-h-full transition-all`}
     >
       {/* Column Header */}
       <div className={`flex items-center justify-between select-none relative ${colHeaderClass}`}>
@@ -123,7 +123,7 @@ export const Column: React.FC<ColumnProps> = ({
                     setColName(column.name);
                   }
                 }}
-                className="w-full text-xs font-bold text-slate-800 uppercase px-1 py-0.5 border border-indigo-300 rounded focus:outline-none"
+                className="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900 uppercase px-1 py-0.5 border border-indigo-300 dark:border-indigo-500 rounded focus:outline-none"
               />
             </form>
           ) : (
@@ -138,7 +138,7 @@ export const Column: React.FC<ColumnProps> = ({
           <span
             className={`${
               density === 'compact' ? 'text-[10px] px-1 py-0.2' : 'text-[11px] px-1.5 py-0.5'
-            } font-semibold text-slate-400 bg-slate-200/60 rounded-full shrink-0`}
+            } font-semibold text-slate-400 dark:text-slate-400 bg-slate-200/60 dark:bg-slate-800 rounded-full shrink-0`}
           >
             {column.cards?.length || 0}
           </span>
@@ -148,7 +148,7 @@ export const Column: React.FC<ColumnProps> = ({
           <button
             onClick={() => setIsAdding(true)}
             title="Add Card"
-            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded transition-colors"
+            className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800 rounded transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
           </button>
@@ -157,22 +157,22 @@ export const Column: React.FC<ColumnProps> = ({
             <button
               onClick={() => setShowMenu(!showMenu)}
               title="Column Options"
-              className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded transition-colors"
+              className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800 rounded transition-colors"
             >
               <MoreHorizontal className="w-3.5 h-3.5" />
             </button>
 
             {/* Dropdown Menu */}
             {showMenu && (
-              <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 shadow-lg rounded-xl py-1 z-30 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-[#161F30] border border-slate-200 dark:border-slate-700 shadow-lg dark:shadow-2xl rounded-xl py-1 z-30 animate-in fade-in zoom-in-95 duration-100 select-none">
                 <button
                   onClick={() => {
                     setShowMenu(false);
                     setIsEditingName(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <Edit2 className="w-3.5 h-3.5 text-slate-400" />
+                  <Edit2 className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
                   <span>Rename Column</span>
                 </button>
                 <button
@@ -180,20 +180,20 @@ export const Column: React.FC<ColumnProps> = ({
                     setShowMenu(false);
                     setIsAdding(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5 text-slate-400" />
+                  <Plus className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
                   <span>Add Card</span>
                 </button>
-                <div className="h-px bg-slate-100 my-1" />
+                <div className="h-px bg-slate-100 dark:bg-slate-700/60 my-1" />
                 <button
                   onClick={() => {
                     setShowMenu(false);
                     setShowDeleteModal(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                  <Trash2 className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
                   <span>Delete Column</span>
                 </button>
               </div>
@@ -209,7 +209,9 @@ export const Column: React.FC<ColumnProps> = ({
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`flex-1 overflow-y-auto px-1.5 pb-2 rounded-xl transition-colors min-h-[250px] flex flex-col ${
-              snapshot.isDraggingOver ? 'bg-indigo-50/50 ring-2 ring-indigo-200/50' : ''
+              snapshot.isDraggingOver
+                ? 'bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-200/50 dark:ring-indigo-800/50'
+                : 'dark:bg-slate-900/30'
             }`}
           >
             {column.cards?.map((card, index) => (
@@ -230,7 +232,7 @@ export const Column: React.FC<ColumnProps> = ({
 
             {/* Quick Add Form */}
             {isAdding ? (
-              <form onSubmit={handleQuickAdd} className="mt-1 bg-white p-2.5 rounded-xl border border-indigo-200 shadow-sm">
+              <form onSubmit={handleQuickAdd} className="mt-1 bg-white dark:bg-[#161F30] p-2.5 rounded-xl border border-indigo-200 dark:border-indigo-500/60 shadow-sm">
                 <input
                   type="text"
                   autoFocus
@@ -243,7 +245,7 @@ export const Column: React.FC<ColumnProps> = ({
                       setQuickTitle('');
                     }
                   }}
-                  className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none mb-2"
+                  className="w-full text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none mb-2 bg-transparent"
                 />
                 <div className="flex items-center justify-end gap-1.5">
                   <button
@@ -252,7 +254,7 @@ export const Column: React.FC<ColumnProps> = ({
                       setIsAdding(false);
                       setQuickTitle('');
                     }}
-                    className="px-2 py-1 text-xs text-slate-500 hover:bg-slate-100 rounded"
+                    className="px-2 py-1 text-xs text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
                   >
                     Cancel
                   </button>
@@ -269,9 +271,9 @@ export const Column: React.FC<ColumnProps> = ({
                 onClick={() => setIsAdding(true)}
                 className={`w-full ${
                   density === 'compact' ? 'py-1 text-[11px]' : 'py-1.5 text-xs'
-                } flex items-center justify-center gap-1.5 font-semibold text-slate-500 hover:text-slate-800 hover:bg-white rounded-xl transition-all border border-transparent hover:border-slate-200/90 shadow-2xs mt-1`}
+                } flex items-center justify-center gap-1.5 font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-white dark:hover:bg-[#161F30] rounded-xl transition-all border border-transparent hover:border-slate-200/90 dark:hover:border-slate-700/80 shadow-2xs mt-1`}
               >
-                <Plus className="w-3.5 h-3.5 text-slate-400" />
+                <Plus className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                 <span>Add card</span>
               </button>
             )}

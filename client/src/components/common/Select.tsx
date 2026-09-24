@@ -158,10 +158,10 @@ export function Select<T extends string | number>({
         }}
         className={`w-full flex items-center justify-between gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all group select-none text-left ${
           disabled
-            ? 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed'
+            ? 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
             : isOpen
-            ? 'bg-white border-indigo-500 ring-2 ring-indigo-500/20 text-slate-800 shadow-xs'
-            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50/80 hover:border-slate-300'
+            ? 'bg-white dark:bg-slate-900 border-indigo-500 ring-2 ring-indigo-500/20 text-slate-800 dark:text-slate-100 shadow-xs'
+            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50/80 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
         } ${buttonClassName}`}
       >
         <div className="flex items-center gap-2 truncate flex-1 min-w-0">
@@ -176,14 +176,14 @@ export function Select<T extends string | number>({
               {selectedOption.icon}
             </span>
           )}
-          <span className={`truncate ${selectedOption ? 'font-medium text-slate-800' : 'text-slate-400'}`}>
+          <span className={`truncate ${selectedOption ? 'font-medium text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}`}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
         </div>
 
         <ChevronDown
-          className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform duration-200 group-hover:text-slate-600 ${
-            isOpen ? 'rotate-180 text-indigo-600' : ''
+          className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0 transition-transform duration-200 group-hover:text-slate-600 dark:group-hover:text-slate-300 ${
+            isOpen ? 'rotate-180 text-indigo-600 dark:text-indigo-400' : ''
           }`}
         />
       </button>
@@ -202,11 +202,11 @@ export function Select<T extends string | number>({
               width: `${coords.width}px`,
               zIndex: 9999,
             }}
-            className={`bg-white rounded-xl shadow-2xl border border-slate-200/90 py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100 select-none ${menuClassName}`}
+            className={`bg-white dark:bg-[#0F172A] rounded-xl shadow-2xl border border-slate-200/90 dark:border-slate-800 py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100 select-none text-slate-800 dark:text-slate-100 ${menuClassName}`}
             onClick={(e) => e.stopPropagation()}
           >
             {options.length === 0 ? (
-              <div className="px-3 py-2 text-xs text-slate-400 text-center italic">
+              <div className="px-3 py-2 text-xs text-slate-400 dark:text-slate-500 text-center italic">
                 No options available
               </div>
             ) : (
@@ -219,8 +219,8 @@ export function Select<T extends string | number>({
                     onClick={() => handleSelect(opt.value)}
                     className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors group ${
                       isSelected
-                        ? 'bg-indigo-50/70 text-indigo-950 font-semibold'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                        ? 'bg-indigo-50/70 dark:bg-indigo-950/60 text-indigo-950 dark:text-indigo-300 font-semibold'
+                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate flex-1 min-w-0">
@@ -238,7 +238,7 @@ export function Select<T extends string | number>({
                       <div className="truncate">
                         <span className="truncate">{opt.label}</span>
                         {opt.description && (
-                          <p className="text-[10px] text-slate-400 font-normal truncate mt-0.5">
+                          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-normal truncate mt-0.5">
                             {opt.description}
                           </p>
                         )}
@@ -246,7 +246,7 @@ export function Select<T extends string | number>({
                     </div>
 
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0 ml-1.5" />
+                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0 ml-1.5" />
                     )}
                   </button>
                 );

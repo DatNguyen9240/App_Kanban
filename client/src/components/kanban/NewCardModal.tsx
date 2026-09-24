@@ -70,19 +70,19 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg relative animate-in fade-in zoom-in-95 duration-150"
+        className="bg-white dark:bg-[#0D1424] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-lg relative animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-2xl">
+        <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40 rounded-t-2xl">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-indigo-600" />
-            <h2 className="text-sm font-semibold text-slate-800">Create New Issue</h2>
+            <Sparkles className="w-4 h-4 text-indigo-500" />
+            <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Create New Issue</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-lg"
+            className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800 rounded-lg transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -90,7 +90,7 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Title *</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Title *</label>
             <input
               type="text"
               autoFocus
@@ -98,24 +98,24 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
               placeholder="Issue title (e.g. Implement user login flow)"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full text-xs text-slate-800 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full text-xs text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900/90 px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all font-medium"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Description</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Description</label>
             <textarea
               rows={3}
               placeholder="Detailed description..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full text-xs text-slate-800 p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+              className="w-full text-xs text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900/90 p-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none transition-all font-medium"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Status (Column)</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Status (Column)</label>
               <Select
                 value={columnId}
                 onChange={(val) => setColumnId(val)}
@@ -126,7 +126,7 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Priority</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Priority</label>
               <Select
                 value={priority}
                 onChange={(val) => setPriority(val)}
@@ -143,17 +143,17 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
             label="Cover Image (Optional)"
           />
 
-          <div className="pt-2 flex items-center justify-end gap-2">
+          <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800/80">
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg font-medium"
+              className="px-3.5 py-1.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-sm"
+              className="px-4 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium shadow-xs transition-colors"
             >
               Create Issue
             </button>

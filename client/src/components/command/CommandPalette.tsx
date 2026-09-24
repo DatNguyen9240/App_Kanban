@@ -116,36 +116,36 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-start justify-center pt-24 p-4"
+      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-start justify-center pt-24 p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-150"
+        className="bg-white dark:bg-[#0D1424] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}
-        <div className="flex items-center px-4 py-3 border-b border-slate-100">
-          <Search className="w-4 h-4 text-slate-400 mr-2.5" />
+        <div className="flex items-center px-4 py-3 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 mr-2.5" />
           <input
             type="text"
             autoFocus
             placeholder="Type a command or search..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none"
+            className="w-full text-xs text-slate-800 dark:text-slate-100 bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none font-medium"
           />
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded transition-colors">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {/* Action List */}
         <div className="p-2 max-h-80 overflow-y-auto">
-          <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+          <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
             Quick Actions
           </div>
           {filtered.length === 0 ? (
-            <div className="py-6 text-center text-xs text-slate-400">
+            <div className="py-6 text-center text-xs text-slate-400 dark:text-slate-500">
               No matching commands found.
             </div>
           ) : (
@@ -155,13 +155,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                 <button
                   key={item.id}
                   onClick={item.action}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors group"
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white transition-colors group"
                 >
                   <div className="flex items-center gap-2.5">
                     <Icon className={`w-4 h-4 ${item.color}`} />
                     <span className="font-medium">{item.title}</span>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-300 transition-colors" />
                 </button>
               );
             })

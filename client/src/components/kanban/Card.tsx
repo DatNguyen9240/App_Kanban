@@ -24,12 +24,12 @@ interface CardProps {
   nextColumnName?: string;
 }
 
-const priorityColors: Record<Priority, { bg: string; text: string; dot: string }> = {
-  urgent: { bg: 'bg-rose-50', text: 'text-rose-700', dot: 'bg-rose-500' },
-  high: { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
-  medium: { bg: 'bg-yellow-50', text: 'text-yellow-700', dot: 'bg-yellow-500' },
-  low: { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
-  none: { bg: 'bg-slate-50', text: 'text-slate-500', dot: 'bg-slate-300' },
+const priorityColors: Record<Priority, { bg: string; text: string; dot: string; darkBg: string; darkText: string }> = {
+  urgent: { bg: 'bg-rose-50', text: 'text-rose-700', dot: 'bg-rose-500', darkBg: 'dark:bg-rose-950/60', darkText: 'dark:text-rose-400' },
+  high: { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500', darkBg: 'dark:bg-amber-950/60', darkText: 'dark:text-amber-400' },
+  medium: { bg: 'bg-yellow-50', text: 'text-yellow-700', dot: 'bg-yellow-500', darkBg: 'dark:bg-yellow-950/60', darkText: 'dark:text-yellow-400' },
+  low: { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500', darkBg: 'dark:bg-blue-950/60', darkText: 'dark:text-blue-400' },
+  none: { bg: 'bg-slate-50', text: 'text-slate-500', dot: 'bg-slate-300', darkBg: 'dark:bg-slate-800/60', darkText: 'dark:text-slate-400' },
 };
 
 export const Card: React.FC<CardProps> = ({
@@ -66,7 +66,7 @@ export const Card: React.FC<CardProps> = ({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => onSelect(card)}
-          className={`bg-white rounded-xl border border-slate-200/90 shadow-card hover:shadow-card-hover active:scale-[0.99] active:ring-2 active:ring-indigo-400/40 transition-all duration-150 cursor-pointer group select-none relative overflow-hidden touch-manipulation ${densityMargin} ${
+          className={`bg-white dark:bg-[#162032] rounded-xl border border-slate-200/90 dark:border-slate-800/90 shadow-card hover:shadow-card-hover dark:hover:border-slate-700 dark:hover:bg-[#1C283E] active:scale-[0.99] active:ring-2 active:ring-indigo-400/40 transition-all duration-150 cursor-pointer group select-none relative overflow-hidden touch-manipulation ${densityMargin} ${
             snapshot.isDragging ? 'shadow-2xl ring-2 ring-indigo-500 rotate-1 scale-[1.03] z-50' : ''
           }`}
         >
@@ -75,7 +75,7 @@ export const Card: React.FC<CardProps> = ({
             <div
               className={`relative w-full ${
                 density === 'compact' ? 'h-14' : 'max-h-44 min-h-[110px]'
-              } overflow-hidden bg-slate-900/5 border-b border-slate-100 flex items-center justify-center`}
+              } overflow-hidden bg-slate-900/5 dark:bg-slate-950/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-center`}
             >
               <img
                 src={card.cover_image_url}
@@ -97,7 +97,7 @@ export const Card: React.FC<CardProps> = ({
             <div className={`flex items-center justify-between gap-1 ${density === 'compact' ? 'mb-1' : 'mb-2'}`}>
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className={`${density === 'compact' ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full shrink-0 ${pStyle.dot}`} />
-                <span className={`${density === 'compact' ? 'text-[10px]' : 'text-[11px]'} font-semibold text-slate-500 font-mono tracking-tight truncate`}>
+                <span className={`${density === 'compact' ? 'text-[10px]' : 'text-[11px]'} font-semibold text-slate-500 dark:text-slate-400 font-mono tracking-tight truncate`}>
                   {card.issue_key}
                 </span>
               </div>
@@ -105,7 +105,7 @@ export const Card: React.FC<CardProps> = ({
               <div className="flex items-center gap-1 shrink-0">
                 {/* Quick Move for mobile or fast desktop navigation */}
                 {(prevColumnId || nextColumnId) && (
-                  <div className="flex items-center bg-slate-100/90 rounded-lg p-0.5 border border-slate-200/60 shadow-2xs">
+                  <div className="flex items-center bg-slate-100/90 dark:bg-slate-800/80 rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/80 shadow-2xs">
                     {prevColumnId && (
                       <button
                         type="button"
@@ -114,7 +114,7 @@ export const Card: React.FC<CardProps> = ({
                           e.stopPropagation();
                           onQuickMoveCard?.(card.id, prevColumnId);
                         }}
-                        className="p-0.5 hover:bg-white text-slate-400 hover:text-indigo-600 rounded transition-colors"
+                        className="p-0.5 hover:bg-white dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded transition-colors"
                       >
                         <ChevronLeft className={density === 'compact' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
                       </button>
@@ -127,7 +127,7 @@ export const Card: React.FC<CardProps> = ({
                           e.stopPropagation();
                           onQuickMoveCard?.(card.id, nextColumnId);
                         }}
-                        className="p-0.5 hover:bg-white text-slate-400 hover:text-indigo-600 rounded transition-colors"
+                        className="p-0.5 hover:bg-white dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded transition-colors"
                       >
                         <ChevronRight className={density === 'compact' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
                       </button>
@@ -139,7 +139,7 @@ export const Card: React.FC<CardProps> = ({
                   <span
                     className={`${
                       density === 'compact' ? 'text-[9px] px-1 py-0.2' : 'text-[10px] px-1.5 py-0.5'
-                    } font-medium rounded uppercase tracking-wider ${pStyle.bg} ${pStyle.text}`}
+                    } font-medium rounded uppercase tracking-wider ${pStyle.bg} ${pStyle.text} ${pStyle.darkBg} ${pStyle.darkText}`}
                   >
                     {card.priority}
                   </span>
@@ -151,7 +151,7 @@ export const Card: React.FC<CardProps> = ({
             <h3
               className={`${
                 density === 'compact' ? 'text-[11px] leading-snug line-clamp-2 font-medium' : 'text-xs leading-snug line-clamp-2 font-semibold'
-              } text-slate-800 group-hover:text-indigo-600 transition-colors`}
+              } text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors`}
             >
               {card.title}
             </h3>
@@ -166,7 +166,7 @@ export const Card: React.FC<CardProps> = ({
                       density === 'compact' ? 'text-[9px] px-1.5 py-0.2' : 'text-[10px] px-2 py-0.5'
                     } font-medium rounded-full`}
                     style={{
-                      backgroundColor: `${label.color}15`,
+                      backgroundColor: `${label.color}18`,
                       color: label.color,
                     }}
                   >
@@ -180,13 +180,13 @@ export const Card: React.FC<CardProps> = ({
             <div
               className={`flex items-center justify-between ${
                 density === 'compact' ? 'mt-1.5 pt-1.5 text-[10px]' : 'mt-2.5 pt-2 text-[11px]'
-              } border-t border-slate-100 text-slate-400`}
+              } border-t border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-400`}
             >
               <div className="flex items-center gap-2">
                 {totalChecklist > 0 && (
                   <div
                     className={`flex items-center gap-1 ${
-                      doneChecklist === totalChecklist ? 'text-emerald-600 font-medium' : ''
+                      doneChecklist === totalChecklist ? 'text-emerald-600 dark:text-emerald-400 font-medium' : ''
                     }`}
                   >
                     <CheckSquare className={density === 'compact' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
@@ -204,7 +204,7 @@ export const Card: React.FC<CardProps> = ({
                 )}
 
                 {card.due_date && (
-                  <div className="flex items-center gap-1 text-slate-500">
+                  <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                     <Calendar className={density === 'compact' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
                     <span>{new Date(card.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
                   </div>
@@ -221,7 +221,7 @@ export const Card: React.FC<CardProps> = ({
                     title={u.full_name}
                     className={`${
                       density === 'compact' ? 'w-4 h-4' : 'w-5 h-5'
-                    } rounded-full ring-2 ring-white object-cover`}
+                    } rounded-full ring-2 ring-white dark:ring-[#162032] object-cover`}
                   />
                 ))}
               </div>

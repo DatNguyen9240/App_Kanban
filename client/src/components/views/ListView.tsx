@@ -134,9 +134,9 @@ export const ListView: React.FC<ListViewProps> = ({
   return (
     <>
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-48">
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-visible min-h-[260px]">
+        <div className="bg-white dark:bg-[#0D1424] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm overflow-visible min-h-[260px]">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+            <thead className="bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
               <tr>
                 {/* Select All Checkbox */}
                 <th className="py-3 px-3 w-10 text-center rounded-tl-2xl">
@@ -144,7 +144,7 @@ export const ListView: React.FC<ListViewProps> = ({
                     type="checkbox"
                     checked={isAllSelected}
                     onChange={handleToggleSelectAll}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                     title="Select all tasks"
                   />
                 </th>
@@ -161,10 +161,10 @@ export const ListView: React.FC<ListViewProps> = ({
                 {onDeleteCard && <th className="py-3 px-4 text-right rounded-tr-2xl">Actions</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/70">
               {allCards.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-400">
+                  <td colSpan={9} className="py-12 text-center text-slate-400 dark:text-slate-500">
                     No issues found on this board.
                   </td>
                 </tr>
@@ -189,10 +189,10 @@ export const ListView: React.FC<ListViewProps> = ({
                         onClick={() => onSelectCard(card)}
                         className={`cursor-pointer transition-colors group ${
                           isSelected
-                            ? 'bg-indigo-50/50 hover:bg-indigo-50/80'
+                            ? 'bg-indigo-50/50 dark:bg-indigo-950/40 hover:bg-indigo-50/80 dark:hover:bg-indigo-950/60'
                             : isDone
-                            ? 'bg-slate-50/40 hover:bg-slate-50'
-                            : 'hover:bg-slate-50/70'
+                            ? 'bg-slate-50/40 dark:bg-slate-900/30 hover:bg-slate-50 dark:hover:bg-slate-900/50'
+                            : 'hover:bg-slate-50/70 dark:hover:bg-slate-800/40'
                         }`}
                       >
                         {/* 1. Multi-Select Checkbox */}
@@ -204,7 +204,7 @@ export const ListView: React.FC<ListViewProps> = ({
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => {}}
-                            className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                            className="rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                           />
                         </td>
 
@@ -213,30 +213,30 @@ export const ListView: React.FC<ListViewProps> = ({
                           <button
                             type="button"
                             onClick={(e) => handleToggleDone(e, card)}
-                            className="p-1 rounded-md text-slate-300 hover:text-emerald-600 transition-all flex items-center justify-center mx-auto"
+                            className="p-1 rounded-md text-slate-300 dark:text-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all flex items-center justify-center mx-auto"
                             title={isDone ? 'Mark as incomplete' : 'Mark as done'}
                           >
                             {isDone ? (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 fill-emerald-100 hover:text-emerald-700" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 fill-emerald-100 dark:fill-emerald-950/60 hover:text-emerald-700" />
                             ) : (
-                              <Circle className="w-4 h-4 text-slate-300 hover:text-emerald-500 hover:scale-110 transition-transform" />
+                              <Circle className="w-4 h-4 text-slate-300 dark:text-slate-600 hover:text-emerald-500 hover:scale-110 transition-transform" />
                             )}
                           </button>
                         </td>
 
                         {/* 3. Issue Key */}
-                        <td className="py-3 px-3 font-mono font-semibold text-slate-500 whitespace-nowrap">
+                        <td className="py-3 px-3 font-mono font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
                           {card.issue_key}
                         </td>
 
                         {/* 4. Title + Checklist Badge */}
-                        <td className="py-3 px-4 font-medium text-slate-900 max-w-xs transition-colors">
+                        <td className="py-3 px-4 font-medium text-slate-900 dark:text-slate-100 max-w-xs transition-colors">
                           <div className="flex items-center gap-2">
                             {totalChecklist > 0 && (
                               <button
                                 type="button"
                                 onClick={(e) => handleToggleExpand(e, card.id)}
-                                className="p-0.5 text-slate-400 hover:text-slate-700 rounded transition-colors"
+                                className="p-0.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded transition-colors"
                                 title="Toggle subtasks checklist"
                               >
                                 {isExpanded ? (
@@ -248,8 +248,8 @@ export const ListView: React.FC<ListViewProps> = ({
                             )}
 
                             <span
-                              className={`truncate group-hover:text-indigo-600 ${
-                                isDone ? 'line-through text-slate-400 font-normal' : ''
+                              className={`truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 ${
+                                isDone ? 'line-through text-slate-400 dark:text-slate-500 font-normal' : ''
                               }`}
                             >
                               {card.title}
@@ -260,8 +260,8 @@ export const ListView: React.FC<ListViewProps> = ({
                                 onClick={(e) => handleToggleExpand(e, card.id)}
                                 className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded font-semibold transition-colors shrink-0 ${
                                   doneChecklist === totalChecklist
-                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                                 }`}
                               >
                                 <CheckSquare className="w-3 h-3" />
@@ -286,7 +286,7 @@ export const ListView: React.FC<ListViewProps> = ({
                               }
                             }}
                             options={columnOptions}
-                            buttonClassName="py-1 px-2.5 text-[11px] rounded-lg border-slate-200/80 bg-slate-50/50 hover:bg-white"
+                            buttonClassName="py-1 px-2.5 text-[11px] rounded-lg"
                           />
                         </td>
 
@@ -303,7 +303,7 @@ export const ListView: React.FC<ListViewProps> = ({
                               }
                             }}
                             options={PRIORITY_OPTIONS}
-                            buttonClassName="py-1 px-2.5 text-[11px] rounded-lg border-slate-200/80 bg-slate-50/50 hover:bg-white"
+                            buttonClassName="py-1 px-2.5 text-[11px] rounded-lg"
                           />
                         </td>
 
@@ -317,20 +317,20 @@ export const ListView: React.FC<ListViewProps> = ({
                                   src={u.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin'}
                                   alt={u.full_name}
                                   title={u.full_name}
-                                  className="w-5 h-5 rounded-full border border-slate-200"
+                                  className="w-5 h-5 rounded-full border border-slate-200 dark:border-slate-700"
                                 />
                               ))
                             ) : (
-                              <span className="text-slate-400 text-xs italic">Unassigned</span>
+                              <span className="text-slate-400 dark:text-slate-500 text-xs italic">Unassigned</span>
                             )}
                           </div>
                         </td>
 
                         {/* 8. Due Date */}
-                        <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
+                        <td className="py-3 px-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
                           {card.due_date ? (
                             <div className="flex items-center gap-1">
-                              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                              <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                               <span>{new Date(card.due_date).toLocaleDateString()}</span>
                             </div>
                           ) : (
@@ -348,7 +348,7 @@ export const ListView: React.FC<ListViewProps> = ({
                                 setCardToDelete(card);
                               }}
                               title="Delete issue"
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                              className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -358,12 +358,12 @@ export const ListView: React.FC<ListViewProps> = ({
 
                       {/* Subtasks / Checklist Expanded Rows */}
                       {isExpanded && card.checklists && card.checklists.length > 0 && (
-                        <tr className="bg-slate-50/70 border-b border-slate-100">
+                        <tr className="bg-slate-50/70 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/70">
                           <td colSpan={9} className="py-2.5 px-8 sm:px-12">
                             <div className="space-y-2">
                               {card.checklists.map((cl) => (
                                 <div key={cl.id} className="space-y-1">
-                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                                     {cl.title}
                                   </span>
                                   <div className="space-y-1 pl-2">
@@ -371,17 +371,17 @@ export const ListView: React.FC<ListViewProps> = ({
                                       <label
                                         key={item.id}
                                         onClick={(e) => e.stopPropagation()}
-                                        className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-slate-100/80 p-1 rounded-md transition-colors w-fit"
+                                        className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-800/60 p-1 rounded-md transition-colors w-fit"
                                       >
                                         <input
                                           type="checkbox"
                                           checked={item.is_done}
                                           onChange={() => onToggleChecklist?.(item.id)}
-                                          className="rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                          className="rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                                         />
                                         <span
                                           className={`transition-colors ${
-                                            item.is_done ? 'line-through text-slate-400' : ''
+                                            item.is_done ? 'line-through text-slate-400 dark:text-slate-500' : ''
                                           }`}
                                         >
                                           {item.content}
@@ -406,7 +406,7 @@ export const ListView: React.FC<ListViewProps> = ({
 
       {/* Floating Bulk Actions Bar */}
       {selectedCardIds.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white px-5 py-2.5 rounded-2xl shadow-2xl border border-slate-700/60 flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 dark:bg-slate-800 text-white px-5 py-2.5 rounded-2xl shadow-2xl border border-slate-700/60 dark:border-slate-700 flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-200">
           <span className="text-xs font-semibold text-slate-200">
             {selectedCardIds.size} {selectedCardIds.size === 1 ? 'task' : 'tasks'} selected
           </span>

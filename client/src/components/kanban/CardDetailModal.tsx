@@ -89,19 +89,19 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-slate-900/50 dark:bg-black/70 backdrop-blur-xs flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+        className="bg-white dark:bg-[#0F172A] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-slate-800 dark:text-slate-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-slate-500 bg-slate-200/60 px-2 py-0.5 rounded">
+            <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-200/60 dark:bg-slate-800 px-2 py-0.5 rounded">
               {card.issue_key}
             </span>
-            <span className="text-slate-300">/</span>
-            <span className="text-xs font-semibold text-slate-700">
+            <span className="text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
               {currentColumn?.name || 'Status'}
             </span>
           </div>
@@ -112,8 +112,8 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
               title={card.cover_image_url ? 'Change cover image' : 'Add cover image'}
               className={`px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-xs font-semibold ${
                 showCoverUpload || card.cover_image_url
-                  ? 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'
-                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                  ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               <ImageIcon className="w-3.5 h-3.5" />
@@ -122,13 +122,13 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
             <button
               onClick={() => setShowDeleteModal(true)}
               title="Delete issue"
-              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
             >
               <Trash2 className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800 rounded-lg transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -137,7 +137,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
         {/* Cover Image Banner */}
         {card.cover_image_url && (
-          <div className="relative max-h-80 min-h-[220px] w-full bg-slate-900/5 border-b border-slate-100 group overflow-hidden shrink-0 flex items-center justify-center">
+          <div className="relative max-h-80 min-h-[220px] w-full bg-slate-900/5 dark:bg-slate-950/60 border-b border-slate-100 dark:border-slate-800 group overflow-hidden shrink-0 flex items-center justify-center">
             {/* Ambient blur background */}
             <img
               src={card.cover_image_url}
@@ -173,7 +173,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
         {/* Expandable Image Upload Area */}
         {showCoverUpload && (
-          <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 animate-in fade-in duration-150 shrink-0">
+          <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 animate-in fade-in duration-150 shrink-0">
             <ImageUpload
               value={card.cover_image_url}
               showPreview={!card.cover_image_url}
@@ -196,15 +196,15 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
               onChange={(e) => setTitle(e.target.value)}
               onBlur={handleTitleBlur}
               placeholder="Issue title"
-              className="w-full text-lg font-bold text-slate-900 focus:outline-none resize-none bg-transparent hover:bg-slate-50 focus:bg-slate-50 p-1.5 rounded-lg border border-transparent focus:border-slate-200 transition-colors"
+              className="w-full text-lg font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none resize-none bg-transparent hover:bg-slate-50 dark:hover:bg-slate-900/60 focus:bg-slate-50 dark:focus:bg-slate-900/60 p-1.5 rounded-lg border border-transparent focus:border-slate-200 dark:focus:border-slate-700 transition-colors"
             />
           </div>
 
           {/* Properties Grid (Status, Priority, Due Date) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-800 text-xs">
             {/* Status */}
             <div>
-              <span className="text-slate-400 block mb-1 font-medium">Status</span>
+              <span className="text-slate-400 dark:text-slate-500 block mb-1 font-medium">Status</span>
               <Select
                 value={card.column_id}
                 onChange={(colId) => onUpdate(card.id, { column_id: colId })}
@@ -215,7 +215,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
             {/* Priority */}
             <div>
-              <span className="text-slate-400 block mb-1 font-medium">Priority</span>
+              <span className="text-slate-400 dark:text-slate-500 block mb-1 font-medium">Priority</span>
               <Select
                 value={card.priority}
                 onChange={(newPriority) => onUpdate(card.id, { priority: newPriority as Priority })}
@@ -226,7 +226,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
             {/* Due Date */}
             <div>
-              <span className="text-slate-400 block mb-1 font-medium">Due Date</span>
+              <span className="text-slate-400 dark:text-slate-500 block mb-1 font-medium">Due Date</span>
               <DatePicker
                 value={dueDate}
                 onChange={(newDate) => {
@@ -238,13 +238,13 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
             {/* Assignee */}
             <div>
-              <span className="text-slate-400 block mb-1 font-medium">Assignee</span>
+              <span className="text-slate-400 dark:text-slate-500 block mb-1 font-medium">Assignee</span>
               <div className="flex items-center gap-1.5 pt-0.5">
                 {card.assignees && card.assignees.length > 0 ? (
                   card.assignees.map((u) => (
                     <div
                       key={u.id}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium"
                     >
                       <img
                         src={u.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin'}
@@ -255,7 +255,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
                     </div>
                   ))
                 ) : (
-                  <span className="text-slate-400 text-xs italic">Unassigned</span>
+                  <span className="text-slate-400 dark:text-slate-500 text-xs italic">Unassigned</span>
                 )}
               </div>
             </div>
@@ -263,7 +263,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
           {/* Description */}
           <div>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
               Description
             </span>
             <textarea
@@ -272,32 +272,32 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               onBlur={handleDescBlur}
               placeholder="Add detailed markdown description..."
-              className="w-full text-xs text-slate-800 p-3 bg-slate-50/50 rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white resize-y transition-all leading-relaxed"
+              className="w-full text-xs text-slate-800 dark:text-slate-100 p-3 bg-slate-50/50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700/80 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 resize-y transition-all leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
           </div>
 
           {/* Checklists */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Checklist
               </span>
             </div>
             <div className="space-y-3">
               {card.checklists && card.checklists.length > 0 ? (
                 card.checklists.map((cl) => (
-                  <div key={cl.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <p className="text-xs font-semibold text-slate-800 mb-2">{cl.title}</p>
+                  <div key={cl.id} className="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-100 mb-2">{cl.title}</p>
                     <div className="space-y-1.5 mb-2.5">
                       {cl.items?.map((item) => (
-                        <label key={item.id} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:bg-slate-100/50 p-1 rounded">
+                        <label key={item.id} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/50 p-1 rounded">
                           <input
                             type="checkbox"
                             checked={item.is_done}
                             onChange={() => onToggleChecklist(item.id)}
-                            className="rounded text-indigo-600 focus:ring-indigo-500"
+                            className="rounded text-indigo-600 focus:ring-indigo-500 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700"
                           />
-                          <span className={item.is_done ? 'line-through text-slate-400' : ''}>
+                          <span className={item.is_done ? 'line-through text-slate-400 dark:text-slate-500' : ''}>
                             {item.content}
                           </span>
                         </label>
@@ -312,14 +312,14 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
                         onAddChecklistItem(card.id, newCheckItem.trim());
                         setNewCheckItem('');
                       }}
-                      className="flex items-center gap-2 pt-1 border-t border-slate-200/60"
+                      className="flex items-center gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-800"
                     >
                       <input
                         type="text"
                         placeholder="Add an item..."
                         value={newCheckItem}
                         onChange={(e) => setNewCheckItem(e.target.value)}
-                        className="flex-1 text-xs bg-white px-2.5 py-1 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        className="flex-1 text-xs bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-2.5 py-1 border border-slate-200 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
                       />
                       <button
                         type="submit"
@@ -331,8 +331,8 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
                   </div>
                 ))
               ) : (
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <p className="text-xs text-slate-400 mb-2">No checklist yet.</p>
+                <div className="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mb-2">No checklist yet.</p>
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
@@ -347,7 +347,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
                       placeholder="Add first checklist item..."
                       value={newCheckItem}
                       onChange={(e) => setNewCheckItem(e.target.value)}
-                      className="flex-1 text-xs bg-white px-2.5 py-1 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="flex-1 text-xs bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-2.5 py-1 border border-slate-200 dark:border-slate-700 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     />
                     <button
                       type="submit"
@@ -363,7 +363,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
 
           {/* Comments Section */}
           <div>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-3">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-3">
               Activity & Comments
             </span>
 
@@ -374,18 +374,18 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
                   <img
                     src={comment.user?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=user`}
                     alt={comment.user?.full_name || 'User'}
-                    className="w-7 h-7 rounded-full object-cover border border-slate-200 mt-0.5"
+                    className="w-7 h-7 rounded-full object-cover border border-slate-200 dark:border-slate-700 mt-0.5"
                   />
-                  <div className="flex-1 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                  <div className="flex-1 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-semibold text-slate-900">
+                      <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
                         {comment.user?.full_name || 'Member'}
                       </span>
-                      <span className="text-[10px] text-slate-400">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
                         {new Date(comment.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-700 whitespace-pre-wrap">{comment.content}</p>
+                    <p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{comment.content}</p>
                   </div>
                 </div>
               ))}
@@ -398,7 +398,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
                 placeholder="Leave a comment..."
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                className="flex-1 text-xs text-slate-800 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white"
+                className="flex-1 text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900"
               />
               <button
                 type="submit"

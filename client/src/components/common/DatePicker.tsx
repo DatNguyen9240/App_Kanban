@@ -286,8 +286,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       <div
         className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl border text-xs font-medium transition-all group select-none ${
           hasValue
-            ? 'bg-indigo-50/50 border-indigo-200 text-indigo-950 shadow-2xs hover:bg-indigo-50 hover:border-indigo-300'
-            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
+            ? 'bg-indigo-50/50 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-800/60 text-indigo-950 dark:text-indigo-300 shadow-2xs hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:border-indigo-300 dark:hover:border-indigo-700'
+            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
         } ${isOpen ? 'ring-2 ring-indigo-500/20 border-indigo-500' : ''}`}
       >
         <div
@@ -299,10 +299,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         >
           <CalendarIcon
             className={`w-3.5 h-3.5 shrink-0 transition-colors ${
-              hasValue ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'
+              hasValue ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
             }`}
           />
-          <span className={`truncate ${hasValue ? 'font-semibold text-slate-800' : 'text-slate-400'}`}>
+          <span className={`truncate ${hasValue ? 'font-semibold text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}`}>
             {formatDisplay()}
           </span>
         </div>
@@ -312,7 +312,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             type="button"
             onClick={handleClear}
             title="Clear due date"
-            className="p-1 hover:bg-slate-200/80 rounded-md text-slate-400 hover:text-rose-600 transition-colors shrink-0 ml-1 cursor-pointer"
+            className="p-1 hover:bg-slate-200/80 dark:hover:bg-slate-800 rounded-md text-slate-400 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors shrink-0 ml-1 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -332,29 +332,29 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                 : { bottom: `${coords.bottom}px` }),
               zIndex: 9999,
             }}
-            className="w-72 bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-3.5 animate-in fade-in zoom-in-95 duration-100 select-none"
+            className="w-72 bg-white dark:bg-[#0F172A] rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800 p-3.5 animate-in fade-in zoom-in-95 duration-100 select-none text-slate-800 dark:text-slate-100"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Quick Presets Bar */}
-            <div className="grid grid-cols-3 gap-1 mb-3 pb-2.5 border-b border-slate-100">
+            <div className="grid grid-cols-3 gap-1 mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setPreset('today')}
-                className="px-2 py-1 text-[11px] font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/70 rounded-lg transition-colors text-center"
+                className="px-2 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/70 dark:hover:bg-indigo-950/50 rounded-lg transition-colors text-center"
               >
                 Today
               </button>
               <button
                 type="button"
                 onClick={() => setPreset('tomorrow')}
-                className="px-2 py-1 text-[11px] font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/70 rounded-lg transition-colors text-center"
+                className="px-2 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/70 dark:hover:bg-indigo-950/50 rounded-lg transition-colors text-center"
               >
                 Tomorrow
               </button>
               <button
                 type="button"
                 onClick={() => setPreset('nextWeek')}
-                className="px-2 py-1 text-[11px] font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/70 rounded-lg transition-colors text-center"
+                className="px-2 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/70 dark:hover:bg-indigo-950/50 rounded-lg transition-colors text-center"
               >
                 +1 Week
               </button>
@@ -362,15 +362,15 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
             {/* Month & Year Navigation Header */}
             <div className="flex items-center justify-between mb-2 px-1">
-              <h3 className="text-xs font-bold text-slate-800">
-                {monthNames[month]} <span className="text-slate-400 font-medium">{year}</span>
+              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                {monthNames[month]} <span className="text-slate-400 dark:text-slate-500 font-medium">{year}</span>
               </h3>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={prevMonth}
                   title="Previous Month"
-                  className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
@@ -378,7 +378,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                   type="button"
                   onClick={nextMonth}
                   title="Next Month"
-                  className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
@@ -390,7 +390,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               {daysOfWeek.map((day) => (
                 <span
                   key={day}
-                  className="text-[10px] font-semibold text-slate-400 uppercase py-1"
+                  className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase py-1"
                 >
                   {day}
                 </span>
@@ -412,9 +412,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                       selected
                         ? 'bg-indigo-600 text-white font-bold shadow-xs'
                         : item.isCurrentMonth
-                        ? 'text-slate-700 hover:bg-indigo-50 hover:text-indigo-600'
-                        : 'text-slate-300 hover:bg-slate-50 hover:text-slate-500'
-                    } ${today && !selected ? 'border border-indigo-400/80 font-semibold text-indigo-600' : ''}`}
+                        ? 'text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-400'
+                        : 'text-slate-300 dark:text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-500 dark:hover:text-slate-400'
+                    } ${today && !selected ? 'border border-indigo-400/80 dark:border-indigo-500 font-semibold text-indigo-600 dark:text-indigo-400' : ''}`}
                   >
                     {item.day}
                   </button>
@@ -424,14 +424,14 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
             {/* Clear Footer */}
             {hasValue && (
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[10px] text-slate-400 font-medium">
+              <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <span className="text-[10px] text-slate-400 dark:text-slate-400 font-medium">
                   Due: {selectedDate?.toLocaleDateString()}
                 </span>
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="text-[11px] text-rose-500 hover:text-rose-700 font-semibold px-2 py-0.5 hover:bg-rose-50 rounded-md transition-colors"
+                  className="text-[11px] text-rose-500 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-semibold px-2 py-0.5 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-md transition-colors"
                 >
                   Remove
                 </button>

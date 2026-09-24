@@ -79,27 +79,27 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200" onClick={onClose}>
       <div
-        className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-150"
+        className="w-full max-w-lg bg-white dark:bg-[#0D1424] rounded-2xl shadow-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/80">
-              <Inbox className="w-5 h-5 text-indigo-600" />
+            <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100/80 dark:border-indigo-900/60">
+              <Inbox className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-slate-900">Inbox & Notifications</h3>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Inbox & Notifications</h3>
                 {unreadCount > 0 && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full">
+                  <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50 rounded-full">
                     {unreadCount} new
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500">Mentions, alerts and activity feed</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">Mentions, alerts and activity feed</p>
             </div>
           </div>
 
@@ -108,7 +108,7 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="button"
                 onClick={markAllAsRead}
-                className="text-xs text-indigo-600 hover:text-indigo-700 font-semibold px-2.5 py-1 rounded-lg hover:bg-indigo-50 transition-colors flex items-center gap-1"
+                className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-semibold px-2.5 py-1 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors flex items-center gap-1"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span>Mark all read</span>
@@ -117,7 +117,7 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-600 p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -125,15 +125,15 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Filter Tabs */}
-        <div className="px-6 pt-3 pb-2 flex items-center gap-2 border-b border-slate-100">
+        <div className="px-6 pt-3 pb-2 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/80">
           {(['all', 'unread', 'mentions'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`text-xs font-semibold px-3 py-1.5 rounded-lg capitalize transition-colors ${
                 activeTab === tab
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-slate-900 dark:bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               {tab === 'all' ? 'All' : tab === 'unread' ? `Unread (${unreadCount})` : 'Mentions'}
@@ -142,28 +142,28 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Content list */}
-        <div className="flex-1 overflow-y-auto divide-y divide-slate-100 p-2">
+        <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60 p-2">
           {filtered.length === 0 ? (
-            <div className="py-12 text-center text-slate-400">
-              <CheckCircle2 className="w-10 h-10 mx-auto mb-2 text-slate-300 stroke-[1.5]" />
-              <p className="text-xs font-medium text-slate-600">All caught up!</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">No notifications in this view.</p>
+            <div className="py-12 text-center text-slate-400 dark:text-slate-500">
+              <CheckCircle2 className="w-10 h-10 mx-auto mb-2 text-slate-300 dark:text-slate-600 stroke-[1.5]" />
+              <p className="text-xs font-medium text-slate-600 dark:text-slate-300">All caught up!</p>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">No notifications in this view.</p>
             </div>
           ) : (
             filtered.map((item) => (
               <div
                 key={item.id}
                 className={`p-3.5 rounded-xl transition-colors flex items-start gap-3 ${
-                  item.isRead ? 'hover:bg-slate-50/80 opacity-80' : 'bg-indigo-50/30 hover:bg-indigo-50/50'
+                  item.isRead ? 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40 opacity-80 dark:opacity-70' : 'bg-indigo-50/30 dark:bg-indigo-950/30 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/50'
                 }`}
               >
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
                     item.type === 'mention'
-                      ? 'bg-purple-100 text-purple-700'
+                      ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
                       : item.type === 'comment'
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'bg-indigo-100 text-indigo-700'
+                      ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300'
+                      : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
                   }`}
                 >
                   {item.type === 'mention' ? (
@@ -177,17 +177,17 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs font-semibold text-slate-900 truncate">{item.title}</p>
-                    <span className="text-[10px] text-slate-400 whitespace-nowrap flex items-center gap-1">
+                    <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">{item.title}</p>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {item.time}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 mt-1 leading-snug">{item.description}</p>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-snug">{item.description}</p>
                 </div>
 
                 {!item.isRead && (
-                  <span className="w-2 h-2 rounded-full bg-indigo-600 shrink-0 mt-1.5" />
+                  <span className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400 shrink-0 mt-1.5" />
                 )}
               </div>
             ))
@@ -195,9 +195,9 @@ export const InboxModal: React.FC<InboxModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
-          <p className="text-[11px] text-slate-400">
-            Press <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-mono">Esc</kbd> to close
+        <div className="p-3 bg-slate-50 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800/80 text-center">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500">
+            Press <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded text-[10px] font-mono">Esc</kbd> to close
           </p>
         </div>
       </div>

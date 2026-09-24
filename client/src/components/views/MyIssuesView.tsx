@@ -88,53 +88,53 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
     switch (priority) {
       case 'urgent':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 text-rose-600 border border-rose-100">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
             Urgent
           </span>
         );
       case 'high':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-600 border border-amber-100">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50">
             High
           </span>
         );
       case 'medium':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
             Medium
           </span>
         );
       case 'low':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
             Low
           </span>
         );
       default:
         return (
-          <span className="text-slate-400 text-[11px]">—</span>
+          <span className="text-slate-400 dark:text-slate-600 text-[11px]">—</span>
         );
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50 dark:bg-[#0B0F17]">
       {/* Top Banner / Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-5 shrink-0">
+      <div className="bg-white dark:bg-[#0D1424] border-b border-slate-200 dark:border-slate-800 px-6 py-5 shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/80 shadow-xs">
-              <CheckSquare className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-100/80 dark:border-indigo-900/60 shadow-xs">
+              <CheckSquare className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
                 My Issues
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/60">
                   {allCards.length}
                 </span>
               </h1>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 All issues in this project assigned to you or created by you
               </p>
             </div>
@@ -143,13 +143,13 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
           <div className="flex items-center gap-2.5">
             {/* Quick Filter Search */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <input
                 type="text"
                 placeholder="Filter issues..."
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white w-44 sm:w-56 transition-all"
+                className="pl-8 pr-3 py-1.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 w-44 sm:w-56 transition-all font-medium"
               />
             </div>
 
@@ -167,14 +167,14 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
         </div>
 
         {/* Status Tab Navigation & Summary */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mt-5 pt-3 border-t border-slate-100">
-          <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl">
+        <div className="flex flex-wrap items-center justify-between gap-3 mt-5 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+          <div className="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-900/80 p-1 rounded-xl">
             <button
               onClick={() => setActiveTab('all')}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'all'
-                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               All ({allCards.length})
@@ -183,8 +183,8 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
               onClick={() => setActiveTab('inprogress')}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'inprogress'
-                  ? 'bg-white text-indigo-700 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-400 shadow-xs font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               In Progress ({inProgressCount})
@@ -193,8 +193,8 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
               onClick={() => setActiveTab('todo')}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'todo'
-                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               To Do ({todoCount})
@@ -203,8 +203,8 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
               onClick={() => setActiveTab('done')}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'done'
-                  ? 'bg-white text-emerald-700 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-xs font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               Done ({doneCount})
@@ -212,15 +212,15 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
           </div>
 
           {/* Quick Counter Chips */}
-          <div className="hidden md:flex items-center gap-3 text-xs text-slate-500 font-medium">
+          <div className="hidden md:flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-medium">
             {urgentCount > 0 && (
-              <span className="flex items-center gap-1.5 text-rose-600 font-semibold bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+              <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-semibold bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-full border border-rose-100 dark:border-rose-900/50">
                 <AlertCircle className="w-3.5 h-3.5" />
                 {urgentCount} High Priority
               </span>
             )}
-            <span className="flex items-center gap-1 text-slate-500">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
               {doneCount}/{allCards.length} Completed
             </span>
           </div>
@@ -229,9 +229,9 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
 
       {/* Main Issues Content Area */}
       <div className="flex-1 overflow-y-auto p-6">
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+        <div className="bg-white dark:bg-[#0D1424] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs overflow-hidden">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+            <thead className="bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3 px-4">Key</th>
                 <th className="py-3 px-4">Title</th>
@@ -242,18 +242,18 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
                 {onDeleteCard && <th className="py-3 px-4 text-right">Actions</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/70">
               {filteredCards.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-16 text-center">
                     <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
                         <Sparkles className="w-6 h-6 text-indigo-400" />
                       </div>
-                      <h2 className="text-sm font-semibold text-slate-800 mb-1">
+                      <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-1">
                         No issues found
                       </h2>
-                      <p className="text-xs text-slate-500 mb-4">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
                         {allCards.length === 0
                           ? 'Get started by creating your first issue in this sprint.'
                           : 'No issues match the selected filter or search keyword.'}
@@ -275,12 +275,12 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
                   <tr
                     key={card.id}
                     onClick={() => onSelectCard(card)}
-                    className="hover:bg-slate-50/80 cursor-pointer transition-colors group"
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 cursor-pointer transition-colors group"
                   >
-                    <td className="py-3 px-4 font-mono font-semibold text-slate-500 whitespace-nowrap">
+                    <td className="py-3 px-4 font-mono font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
                       {card.issue_key}
                     </td>
-                    <td className="py-3 px-4 font-medium text-slate-900 max-w-md truncate group-hover:text-indigo-600 transition-colors">
+                    <td className="py-3 px-4 font-medium text-slate-900 dark:text-slate-100 max-w-md truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       {card.title}
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">
@@ -307,17 +307,17 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
                           src={card.assignees?.[0]?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin'}
                           alt={card.assignees?.[0]?.full_name || 'Admin User'}
                           title={card.assignees?.[0]?.full_name || 'Admin User'}
-                          className="w-5 h-5 rounded-full border border-slate-200"
+                          className="w-5 h-5 rounded-full border border-slate-200 dark:border-slate-700"
                         />
-                        <span className="text-[11px] text-slate-600 font-medium">
+                        <span className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
                           {card.assignees?.[0]?.full_name || 'Admin User'}
                         </span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
+                    <td className="py-3 px-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
                       {card.due_date ? (
                         <div className="flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                           <span>{new Date(card.due_date).toLocaleDateString()}</span>
                         </div>
                       ) : (
@@ -333,7 +333,7 @@ export const MyIssuesView: React.FC<MyIssuesViewProps> = ({
                             setCardToDelete(card);
                           }}
                           title="Delete card"
-                          className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

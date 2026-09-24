@@ -38,6 +38,26 @@ export const App: React.FC = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Theme state (default to dark)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('kanban_theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    return 'dark';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('kanban_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   const handleDensityChange = (d: CardDensity) => {
     setDensity(d);
     localStorage.setItem('kanban_density', d);
@@ -51,8 +71,23 @@ export const App: React.FC = () => {
   const [isInboxOpen, setIsInboxOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : true;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('kanban_sidebar_open');
+      if (saved !== null) {
+        return saved === 'true';
+      }
+      return window.innerWidth >= 768;
+    }
+    return true;
   });
+
+  const handleToggleSidebar = () => {
+    setIsSidebarOpen((prev) => {
+      const next = !prev;
+      localStorage.setItem('kanban_sidebar_open', String(next));
+      return next;
+    });
+  };
   const [isNewColumnOpen, setIsNewColumnOpen] = useState(false);
 
   // 1. Initial Load
@@ -133,7 +168,7 @@ export const App: React.FC = () => {
           setIsSettingsOpen(false);
         } else if (selectedCard) {
           setSelectedCard(null);
-        } else if (isSidebarOpen) {
+        } else if (isSidebarOpen && window.innerWidth < 768) {
           setIsSidebarOpen(false);
         }
       }
@@ -459,7 +494,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#F8FAFC]">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#F8FAFC] dark:bg-[#0B0F17] transition-colors duration-200">
       {/* Left Sidebar */}
       <Sidebar
         workspace={workspace}
@@ -489,21 +524,23 @@ export const App: React.FC = () => {
           onSearchChange={setSearchQuery}
           density={density}
           onDensityChange={handleDensityChange}
-          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onToggleSidebar={handleToggleSidebar}
           onOpenNewColumn={() => setIsNewColumnOpen(true)}
         />
 
         {/* View Content */}
         <main className="flex-1 overflow-hidden flex flex-col">
           {!currentProject || !currentBoard ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50">
-              <div className="w-16 h-16 rounded-3xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-4 shadow-sm animate-in zoom-in-95 duration-200">
-                <FolderPlus className="w-8 h-8 text-indigo-600" />
+            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 dark:bg-transparent">
+              <div className="w-16 h-16 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4 shadow-sm animate-in zoom-in-95 duration-200">
+                <FolderPlus className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
               </div>
-              <h2 className="text-base font-bold text-slate-900 mb-1">
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-1">
                 No project selected
               </h2>
-              <p className="text-xs text-slate-500 max-w-sm text-center mb-6">
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm text-center mb-6">
                 There are no active projects in this workspace. Create a project to start organizing tasks, columns, and sprint boards.
               </p>
               <button

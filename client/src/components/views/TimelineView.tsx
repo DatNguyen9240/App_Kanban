@@ -17,18 +17,18 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ board, onSelectCard 
   return (
     <div className="flex-1 flex flex-col overflow-hidden p-3 sm:p-6">
       <div className="flex items-center gap-2 mb-3 sm:mb-4">
-        <BarChart2 className="w-4 h-4 text-purple-600" />
-        <h2 className="text-sm font-bold text-slate-800">Sprint Timeline & Dependencies</h2>
+        <BarChart2 className="w-4 h-4 text-purple-500" />
+        <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">Sprint Timeline & Dependencies</h2>
       </div>
 
-      <div className="flex-1 bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-x-auto overflow-y-hidden flex flex-col">
+      <div className="flex-1 bg-white dark:bg-[#0D1424] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm overflow-x-auto overflow-y-hidden flex flex-col">
         <div className="min-w-[760px] flex-1 flex flex-col">
           {/* Header timeline */}
-          <div className="flex border-b border-slate-200 bg-slate-50/80 text-xs font-semibold text-slate-500 py-3 shrink-0">
+          <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-xs font-semibold text-slate-500 dark:text-slate-400 py-3 shrink-0">
             <div className="w-72 px-4 shrink-0">Issue</div>
             <div className="flex-1 grid grid-cols-9 text-center text-[11px]">
               {timelineDays.map((d) => (
-                <div key={d} className="truncate px-1 border-l border-slate-200/60 first:border-l-0">
+                <div key={d} className="truncate px-1 border-l border-slate-200/60 dark:border-slate-800/60 first:border-l-0">
                   {d}
                 </div>
               ))}
@@ -36,9 +36,9 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ board, onSelectCard 
           </div>
 
           {/* Rows */}
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
+          <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/70">
             {allCards.length === 0 ? (
-              <div className="py-12 text-center text-slate-400 text-xs">
+              <div className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">
                 No issues available to display in timeline. Create cards to view Gantt progress.
               </div>
             ) : (
@@ -50,7 +50,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ board, onSelectCard 
                   <div
                     key={card.id}
                     onClick={() => onSelectCard(card)}
-                    className="flex items-center hover:bg-slate-50/60 cursor-pointer transition-colors py-3"
+                    className="flex items-center hover:bg-slate-50/60 dark:hover:bg-slate-800/30 cursor-pointer transition-colors py-3"
                   >
                     {/* Left task info */}
                     <div className="w-72 px-4 shrink-0 flex items-center gap-2 overflow-hidden">
@@ -58,10 +58,10 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ board, onSelectCard 
                         className="w-2 h-2 rounded-full shrink-0"
                         style={{ backgroundColor: card.columnColor }}
                       />
-                      <span className="font-mono text-xs font-semibold text-slate-500 shrink-0">
+                      <span className="font-mono text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
                         {card.issue_key}
                       </span>
-                      <span className="text-xs font-medium text-slate-800 truncate">
+                      <span className="text-xs font-medium text-slate-800 dark:text-slate-100 truncate">
                         {card.title}
                       </span>
                     </div>
