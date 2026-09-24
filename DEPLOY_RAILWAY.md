@@ -41,17 +41,49 @@ Railway là nền tảng Cloud hiện đại hỗ trợ Docker container, Go và
 
 ---
 
-### 🗄️ BƯỚC 3: Thêm Cơ Sở Dữ Liệu PostgreSQL Trên Railway (Tùy chọn)
+### 🗄️ BƯỚC 3: Cấu Hình Cơ Sở Dữ Liệu PostgreSQL Riêng (Không Lo Mất Dữ Liệu)
 
-Mặc định khi không có PostgreSQL, backend Go sẽ chạy SQLite độc lập tự động. Nếu muốn dữ liệu lưu trữ vĩnh viễn trên Cloud PostgreSQL:
+> [!WARNING]
+> **Tại sao deploy lên Railway lại bị mất dữ liệu cũ?**
+> Container của Railway là dạng **Ephemeral (bộ nhớ tạm)**. Khi bạn không gắn Database riêng, hệ thống sẽ tự động dùng SQLite (`kanban.db` lưu trong ổ đĩa của container). Mỗi khi bạn đẩy code mới hoặc Railway tự động redeploy/rebuild, container cũ sẽ bị xóa và một container mới được tạo ra $\to$ file `kanban.db` bị mất sạch!
+>
+> **Để dữ liệu tồn tại vĩnh viễn**, bạn cần dùng một Database PostgreSQL độc lập theo 1 trong 2 cách sau:
 
-1. Trong trang dự án Railway, bấm nút **+ New** (góc trên bên phải).
+#### 🌟 Cách 1: Thêm PostgreSQL ngay trên Railway (Khuyên dùng — 1 phút)
+1. Trong màn hình Project trên Railway, bấm nút **+ New** (góc trên bên phải hoặc phím `Ctrl + K`).
 2. Chọn **Database** $\to$ Chọn **Add PostgreSQL**.
-3. Railway sẽ tự động tạo một database PostgreSQL và sinh biến môi trường `DATABASE_URL`.
-4. Bấm vào Service Kanban của bạn $\to$ chọn tab **Variables** $\to$ bấm **Add Reference Variable** $\to$ chọn `DATABASE_URL` từ PostgreSQL vừa tạo.
-5. Service sẽ tự động redeploy:
-   - Backend Go tự động phát hiện `DATABASE_URL` dạng `postgresql://...` $\to$ chuyển sang kết nối PostgreSQL.
-   - Tự động chạy AutoMigrate và seed dữ liệu khởi tạo.
+3. Railway sẽ tạo một service database PostgreSQL riêng biệt (có ổ đĩa lưu trữ vĩnh viễn, không bao giờ bị xóa khi deploy app).
+4. Bấm vào Service Web Kanban của bạn $\to$ Chuyển sang tab **Variables**:
+   - Bấm **New Variable** $\to$ Bấm **Add Reference** $\to$ Chọn `DATABASE_URL` từ PostgreSQL vừa tạo.
+   - Thêm tiếp biến: `DB_TYPE` = `postgres`.
+5. Railway sẽ tự động kết nối và redeploy:
+   - Backend Go tự động phát hiện `DATABASE_URL` PostgreSQL $\to$ Tự động chạy `AutoMigrate` tạo đầy đủ bảng.
+   - Dữ liệu của bạn từ nay sẽ được lưu trữ vĩnh viễn trên PostgreSQL độc lập, dù có redeploy 100 lần cũng không bao giờ mất!
+
+#### 🌐 Cách 2: Dùng Database Cloud Độc Lập Bên Ngoài (Supabase hoặc Neon.tech)
+Nếu bạn muốn cơ sở dữ liệu hoàn toàn độc lập với Railway (kể cả xóa project Railway hay chuyển sang host khác vẫn giữ nguyên 100% dữ liệu):
+1. Truy cập [Supabase.com](https://supabase.com) hoặc [Neon.tech](https://neon.tech) tạo tài khoản miễn phí.
+2. Tạo một Project mới và copy chuỗi **Connection String** dạng:
+   `postgresql://postgres:[password]@[host]:5432/postgres` (hoặc `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require`).
+3. Mở Railway $\to$ Tab **Variables** của service $\to$ Điền:
+   - `DATABASE_URL` = `chuỗi connection string bạn vừa copy`
+   - `DB_TYPE` = `postgres`
+
+---
+
+### 🚚 BƯỚC 4: Chuyển Dữ Liệu Cũ (SQLite) Sang PostgreSQL Mới
+
+Nếu bạn đã có các thẻ công việc (Cards), Cột (Columns) hoặc Dự án trong file `kanban.db` ở máy tính và muốn nạp toàn bộ sang Database PostgreSQL mới:
+
+Mở PowerShell trong thư mục `server/` và chạy lệnh sau:
+```bash
+go run ./cmd/migrate -from ./kanban.db -to "postgresql://postgres:password@host:port/dbname"
+```
+*(Thay thế chuỗi URL bằng `DATABASE_URL` PostgreSQL của bạn trên Railway hoặc Supabase/Neon)*
+
+Công cụ sẽ tự động:
+- Đọc toàn bộ người dùng, workspace, projects, boards, columns, cards, nhãn labels, checklists và comments từ file `kanban.db`.
+- Tự động nạp toàn bộ vào database PostgreSQL chỉ trong 3 giây mà không làm trùng lặp dữ liệu.
 
 ---
 

@@ -2,6 +2,7 @@ package database
 
 import (
 	"log"
+	"time"
 
 	"kanban-server/internal/config"
 	"kanban-server/internal/models"
@@ -32,6 +33,13 @@ func InitDB(cfg *config.Config) *gorm.DB {
 	}
 
 	log.Printf("Connected to database successfully (%s)", cfg.DBType)
+
+	// Configure connection pool for stability on cloud databases
+	if sqlDB, err := DB.DB(); err == nil {
+		sqlDB.SetMaxIdleConns(10)
+		sqlDB.SetMaxOpenConns(50)
+		sqlDB.SetConnMaxLifetime(time.Hour)
+	}
 
 	// Auto-migrate schema
 	err = DB.AutoMigrate(

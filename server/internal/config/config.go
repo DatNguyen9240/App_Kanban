@@ -23,8 +23,16 @@ func LoadConfig() *Config {
 		port = "8080"
 	}
 
-	dbURL := os.Getenv("DATABASE_URL")
-	dbType := os.Getenv("DB_TYPE")
+	dbURL := strings.TrimSpace(os.Getenv("DATABASE_URL"))
+	if dbURL == "" {
+		// Fallbacks used by various cloud database providers (Railway, Supabase, Neon)
+		dbURL = strings.TrimSpace(os.Getenv("DATABASE_PUBLIC_URL"))
+	}
+	if dbURL == "" {
+		dbURL = strings.TrimSpace(os.Getenv("POSTGRES_URL"))
+	}
+
+	dbType := strings.TrimSpace(strings.ToLower(os.Getenv("DB_TYPE")))
 
 	if dbType == "" {
 		if strings.HasPrefix(dbURL, "postgres://") || strings.HasPrefix(dbURL, "postgresql://") {
