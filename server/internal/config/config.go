@@ -31,6 +31,7 @@ func LoadConfig() *Config {
 	if dbURL == "" {
 		dbURL = strings.TrimSpace(os.Getenv("POSTGRES_URL"))
 	}
+	dbURL = strings.Trim(dbURL, `"'`)
 
 	dbType := strings.TrimSpace(strings.ToLower(os.Getenv("DB_TYPE")))
 
