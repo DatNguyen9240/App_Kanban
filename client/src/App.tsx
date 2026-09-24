@@ -66,6 +66,7 @@ export const App: React.FC = () => {
   // Modals
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [isNewCardOpen, setIsNewCardOpen] = useState(false);
+  const [newCardInitialDate, setNewCardInitialDate] = useState<string | undefined>(undefined);
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isInboxOpen, setIsInboxOpen] = useState(false);
@@ -263,6 +264,7 @@ export const App: React.FC = () => {
     description: string;
     priority: any;
     cover_image_url?: string;
+    due_date?: string;
   }) => {
     if (!currentBoard) return;
     try {
@@ -589,7 +591,15 @@ export const App: React.FC = () => {
               )}
 
               {currentView === 'calendar' && filteredBoard && (
-                <CalendarView board={filteredBoard} onSelectCard={setSelectedCard} />
+                <CalendarView
+                  board={filteredBoard}
+                  onSelectCard={setSelectedCard}
+                  onUpdateCard={handleUpdateCard}
+                  onNewCard={(defaultDate?: string) => {
+                    setNewCardInitialDate(defaultDate);
+                    setIsNewCardOpen(true);
+                  }}
+                />
               )}
 
               {currentView === 'timeline' && filteredBoard && (
@@ -618,7 +628,11 @@ export const App: React.FC = () => {
         <NewCardModal
           isOpen={isNewCardOpen}
           columns={currentBoard?.columns || []}
-          onClose={() => setIsNewCardOpen(false)}
+          initialDueDate={newCardInitialDate}
+          onClose={() => {
+            setIsNewCardOpen(false);
+            setNewCardInitialDate(undefined);
+          }}
           onSubmit={handleCreateCard}
         />
       )}

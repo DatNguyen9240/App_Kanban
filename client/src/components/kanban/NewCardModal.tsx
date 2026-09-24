@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Calendar as CalendarIcon } from 'lucide-react';
 import { Column, Priority } from '../../types/kanban';
 import { Select, PRIORITY_OPTIONS, SelectOption } from '../common/Select';
 import { ImageUpload } from '../common/ImageUpload';
+import { DatePicker } from '../common/DatePicker';
 
 interface NewCardModalProps {
   isOpen: boolean;
@@ -14,7 +15,9 @@ interface NewCardModalProps {
     description: string;
     priority: Priority;
     cover_image_url?: string;
+    due_date?: string;
   }) => void;
+  initialDueDate?: string;
 }
 
 export const NewCardModal: React.FC<NewCardModalProps> = ({
@@ -22,18 +25,26 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
   columns,
   onClose,
   onSubmit,
+  initialDueDate,
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [columnId, setColumnId] = useState(columns[0]?.id || '');
   const [priority, setPriority] = useState<Priority>('none');
   const [coverUrl, setCoverUrl] = useState('');
+  const [dueDate, setDueDate] = useState<string | null>(initialDueDate || null);
 
   const columnOptions: SelectOption<string>[] = columns.map((c) => ({
     value: c.id,
     label: c.name,
     color: c.color || '#6366f1',
   }));
+
+  useEffect(() => {
+    if (isOpen) {
+      setDueDate(initialDueDate || null);
+    }
+  }, [isOpen, initialDueDate]);
 
   useEffect(() => {
     if (!columnId && columns.length > 0) {
@@ -64,6 +75,7 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
       description: description.trim(),
       priority,
       cover_image_url: coverUrl.trim() || undefined,
+      due_date: dueDate || undefined,
     });
 
     onClose();
@@ -113,7 +125,7 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Status (Column)</label>
               <Select
@@ -133,6 +145,16 @@ export const NewCardModal: React.FC<NewCardModalProps> = ({
                 options={PRIORITY_OPTIONS}
                 placeholder="Select priority..."
                 buttonClassName="py-2 rounded-xl"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Due Date</label>
+              <DatePicker
+                value={dueDate}
+                onChange={(val) => setDueDate(val)}
+                placeholder="No due date"
+                className="w-full py-2 px-3 border border-slate-200 dark:border-slate-700 rounded-xl text-xs bg-white dark:bg-slate-900/90"
               />
             </div>
           </div>
